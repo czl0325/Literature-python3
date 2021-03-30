@@ -25,8 +25,17 @@ class ResponseData(object):
 
     def __init__(self, code, data=None):
         self.code = code
-        self.msg = error_map[code]
         self.data = data
+
+    @property
+    def code(self):
+        return self.code
+
+    @code.setter
+    def code(self, value):
+        if not error_map[value]:
+            self.msg = '未知错误'
+        self.msg = error_map[value]
 
     def to_dict(self):
         return jsonify({'code': self.code, 'msg': self.msg, 'data': self.data})
