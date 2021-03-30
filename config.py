@@ -2,6 +2,7 @@ class BaseConfig(object):
     DEBUG = None
     # jwt的密钥
     SECRET_KEY = "czl"
+    JWT_EXPIRE_TIME = 24
     # 数据库的连接信息
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:111@localhost/Literature'
     # 动态追踪修改，如果未配置，只会提示警告信息，不影响代码的业务逻辑
