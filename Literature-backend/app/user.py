@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app
+from flask import Blueprint, current_app, request
 from flask_restful import Api, Resource, reqparse
 from datetime import datetime, timedelta
 from lib.jwt_utils import generate_jwt
@@ -6,9 +6,15 @@ from models import db, Book, BookShelf, User
 import random
 from utils.response_code import RET, ResponseData
 
-user_router = Blueprint('user_router', __name__)
+user_router = Blueprint('user_router', __name__, url_prefix='/user')
 
 api = Api(user_router)
+
+
+@user_router.route('/login', methods=['POST'])
+def login():
+    code = request.form.get('code')
+    return code
 
 
 class UserLoginResource(Resource):
@@ -65,6 +71,7 @@ class AddTestUser(Resource):
 class LoginByTestUser(Resource):
     def post(self):
         res_data = ResponseData(code=RET.OK)
+        print(res_data)
 
         try:
             openId = '1' * 32
@@ -81,5 +88,5 @@ class LoginByTestUser(Resource):
             return res_data.to_dict()
 
 
-api.add_resource(AddTestUser, '/user/addtestuser')
-api.add_resource(LoginByTestUser, '/user/logintestuser')
+api.add_resource(AddTestUser, '/addtestuser')
+api.add_resource(LoginByTestUser, '/logintestuser')

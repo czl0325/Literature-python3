@@ -1,5 +1,5 @@
 # Literature-python3
-小陈文学。采用python3+flask开发，前后端分离
+电子书网站模板。前后端分离，前端采用vue3+vant-ui开发，后端采用python3.9+flask开发。
 
 
 ### 1. 创建虚拟环境

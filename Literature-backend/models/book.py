@@ -66,6 +66,12 @@ class Book(BaseModel, db.Model):
         self.update_time = data['update_time']
         self.source = data['source']
 
+    def keys(self):
+        return 'book_id', 'channel_book_id', 'book_name', 'cate_id', 'cate_name', 'channel_type', 'author_name', 'chapter_num', 'is_publish', 'status', 'cover', 'intro', 'word_count', 'showed', 'source', 'short_des', 'collect_count', 'heat'
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
 # class BookCategoryRelation(BaseModel, db.Model):
 #     """
 #     分类和一级分类的关系
@@ -78,7 +84,6 @@ class Book(BaseModel, db.Model):
 
 
 BookCategoryRelation = db.Table('tb_book_category_relation',
-    db.Column('id', db.Integer, primary_key=True),
     db.Column('big_cate_id', db.Integer, db.ForeignKey('tb_book_big_category.cate_id')),
     db.Column('cate_id', db.Integer, db.ForeignKey('tb_book_category.cate_id'))
 )

@@ -24,10 +24,15 @@ class ChapterListResource(Resource):
         # 2.根据书籍id参数，查询书籍表
         try:
             book = Book.query.get(book_id)
+            if not book:
+                res_data.code = RET.NODATA
+                return res_data.to_dict()
         except Exception as e:
             current_app.logger.error(e)
             res_data.code = RET.NODATA
             return res_data.to_dict()
 
+        return res_data.to_dict()
 
-api.add_resource(ChapterListResource, '/book/chapters/<int:book_id>')
+
+api.add_resource(ChapterListResource, '/chapters/<int:book_id>')
