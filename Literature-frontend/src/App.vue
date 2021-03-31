@@ -1,18 +1,31 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <router-view></router-view>
+  <van-tabbar v-model="active" active-color="#ee0a24" inactive-color="#000" v-show="route.meta.showTab">
+    <van-tabbar-item icon="wap-home">首页</van-tabbar-item>
+    <van-tabbar-item icon="label">分类</van-tabbar-item>
+    <van-tabbar-item icon="manager">我的</van-tabbar-item>
+  </van-tabbar>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import HelloWorld from './components/HelloWorld.vue';
+import { defineComponent, ref } from 'vue';
+import { useRoute } from "vue-router";
 
-@Options({
+export default defineComponent({
+  name: 'App',
   components: {
-    HelloWorld,
+
   },
-})
-export default class App extends Vue {}
+  setup() {
+    const active = ref(0)
+    const route = useRoute()
+
+    return {
+      active,
+      route
+    }
+  }
+});
 </script>
 
 <style>
