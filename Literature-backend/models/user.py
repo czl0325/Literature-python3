@@ -2,6 +2,7 @@ from flask_login import UserMixin
 from sqlalchemy.sql import func
 from .BaseModel import db, BaseModel
 from datetime import datetime
+from werkzeug.security import generate_password_hash
 
 
 class User(BaseModel, UserMixin, db.Model):
@@ -9,7 +10,8 @@ class User(BaseModel, UserMixin, db.Model):
     __tablename__ = 'tb_user'
     id = db.Column(db.Integer, primary_key=True)
     openId = db.Column(db.String(128), unique=True)
-    nickName = db.Column(db.String(50))
+    userName = db.Column(db.String(16))
+    password_hash = db.Column(db.String(20))
     gender = db.Column(db.Integer, server_default='0')  # 1 男  0女
     city = db.Column(db.String(50))
     province = db.Column(db.String(50))
@@ -35,7 +37,7 @@ class User(BaseModel, UserMixin, db.Model):
         self.updateInfo(data)
 
     def updateInfo(self, data):
-        self.nickName = data['nickName']
+        self.userName = data['userName']
         self.gender = data['gender']
         self.city = data['city']
         self.province = data['province']
@@ -47,7 +49,7 @@ class User(BaseModel, UserMixin, db.Model):
         return {
             'id': self.id,
             'openId': self.openId,
-            'nickName': self.nickName,
+            'userName': self.userName,
             'gender': self.gender,
             'city': self.city,
             'province': self.province,
@@ -60,3 +62,13 @@ class User(BaseModel, UserMixin, db.Model):
             'background': self.background,
             'turn': self.turn
         }
+
+    @property
+    def password(self):
+        raise AttributeError('该参数只能设置,不能读取')
+        pass
+
+    @password.setter
+    def password(self, value):
+        self.password_hash = generate_password_hash(value)
+

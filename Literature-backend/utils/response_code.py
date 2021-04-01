@@ -35,8 +35,8 @@ class ResponseData(object):
     def code(self, value):
         self._code = value
         if not error_map[value]:
-            self.msg = '未知错误'
-        self.msg = error_map[value]
+            self.message = '未知错误'
+        self.message = error_map[value]
 
     def to_dict(self):
-        return jsonify({'code': self._code, 'msg': self.msg, 'data': self.data})
+        return jsonify({'code': self._code, 'message': self.message, 'data': self.data})

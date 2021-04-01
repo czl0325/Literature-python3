@@ -1,7 +1,7 @@
 <template>
-  <transition name="van-slide-right">
+<!--  <transition name="van-fade">-->
     <router-view></router-view>
-  </transition>
+<!--  </transition>-->
   <van-tabbar v-model="route.meta.num" active-color="#ee0a24" inactive-color="#000" v-show="route.meta.showTab" safe-area-inset-bottom>
     <van-tabbar-item to="home" icon="wap-home">书城</van-tabbar-item>
     <van-tabbar-item to="category" icon="label">分类</van-tabbar-item>
@@ -29,11 +29,12 @@ export default defineComponent({
 
 <style>
 #app {
+  min-height: 100vh;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-color: white;
+  background-color: #f4f4f4;
 }
 </style>
