@@ -12,7 +12,7 @@ module.exports = {
     "eslint:recommended",
     "plugin:vue/recommended"
   ],
-  //plugins: ["vue"],
+  plugins: ["vue"],
   'rules': {
     'vue/no-multiple-template-root': 'off',
     'vue/singleline-html-element-content-newline': 'off',

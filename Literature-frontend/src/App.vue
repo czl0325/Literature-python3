@@ -1,5 +1,7 @@
 <template>
-  <router-view></router-view>
+  <transition name="van-slide-right">
+    <router-view></router-view>
+  </transition>
   <van-tabbar v-model="route.meta.num" active-color="#ee0a24" inactive-color="#000" v-show="route.meta.showTab" safe-area-inset-bottom>
     <van-tabbar-item to="home" icon="wap-home">书城</van-tabbar-item>
     <van-tabbar-item to="category" icon="label">分类</van-tabbar-item>
@@ -32,5 +34,6 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-color: white;
 }
 </style>

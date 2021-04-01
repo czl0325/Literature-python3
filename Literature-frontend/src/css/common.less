@@ -1,10 +1,29 @@
 @mainColor: #86BD77;
 
-.avatar(@size:80px) {
+.avatar(@size:60px) {
   width: @size;
   height: @size;
   border-radius: 50%;
   object-fit: cover;
   overflow: hidden;
   background-color: #eee;
+}
+
+.flex-row(@justify: center) {
+  display: flex;
+  flex-direction: row;
+  justify-content: @justify;
+  align-items: center;
+}
+
+.flex-column(@justify: center) {
+  display: flex;
+  flex-direction: column;
+  justify-content: @justify;
+  align-items: flex-start;
+}
+
+.font-size-color(@fontSize: 16px, @color: #333) {
+  font-size: @fontSize;
+  color: @color;
 }
