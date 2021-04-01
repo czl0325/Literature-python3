@@ -11,6 +11,13 @@ user_router = Blueprint('user_router', __name__, url_prefix='/user')
 api = Api(user_router)
 
 
+@user_router.route('/register', methods=['POST'])
+def register():
+    print(request.form)
+    print(request.files)
+    return ResponseData(RET.OK).to_dict()
+
+
 @user_router.route('/login', methods=['POST'])
 def login():
     code = request.form.get('code')

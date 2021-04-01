@@ -15,6 +15,7 @@ export class HttpService {
     return new Promise((resolve, reject) => {
       this.myAxios.get(url, {
         params: params
+        // @ts-ignore
       }).then((res: BaseResponseData) => {
         this.resultHandle(res, resolve);
       }).catch((err: { message: any; }) => {
@@ -25,6 +26,7 @@ export class HttpService {
 
   post(url: string, params: object) {
     return new Promise((resolve, reject) => {
+      // @ts-ignore
       this.myAxios.post(url, qs.stringify(params)).then((res:BaseResponseData) => {
         this.resultHandle(res, resolve);
       }).catch((err: { message: any; }) => {
@@ -44,6 +46,7 @@ export class HttpService {
       formData.append(key, params[key])
     })
     return new Promise((resolve, reject) => {
+      // @ts-ignore
       this.myAxios.post(url, formData, configs).then((res:BaseResponseData) => {
         this.resultHandle(res, resolve);
       }).catch((err: { message: any; }) => {

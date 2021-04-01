@@ -33,7 +33,7 @@ class ResponseData(object):
 
     @code.setter
     def code(self, value):
-        self._code = value
+        self._code = int(value)
         if not error_map[value]:
             self.message = '未知错误'
         self.message = error_map[value]

@@ -5,8 +5,7 @@
     <van-form @submit="onResister">
       <van-field v-model="user.userName" name="用户名" label="用户名" placeholder="请输入用户名" :rules="[{ required: true, message: '请填写用户名' }]"
       />
-      <van-field v-model="user.password" type="password" name="密码" label="密码" placeholder="请输入密码" :rules="[{ required: true, message: '请填写密码' }]"
-      />
+      <van-field v-model="user.password" type="password" name="密码" label="密码" placeholder="请输入密码" :rules="[{ required: true, message: '请填写密码' }]" />
       <van-field name="radio" label="性别">
         <template #input>
           <van-radio-group v-model="user.gender" direction="horizontal">
@@ -15,9 +14,8 @@
           </van-radio-group>
         </template>
       </van-field>
-      <van-field v-model="user.location" readonly clickable name="area" label="地区选择" placeholder="点击选择省市区" @click="state.showArea=true"
-      />
-      <van-field name="uploader" label="上传头像">
+      <van-field v-model="user.location" readonly clickable name="area" label="地区选择" placeholder="点击选择省市区" @click="state.showArea=true"/>
+      <van-field name="uploader" label="上传头像" :rules="[{ required: true, message: '请选择头像' }]">
         <template #input>
           <van-uploader v-model="files" :max-count="1"/>
         </template>
@@ -40,6 +38,9 @@
 import {defineComponent, reactive, ref} from 'vue'
 import NavigationBar from "@/components/NavigationBar.vue";
 import {areaList} from '@/tools/areas'
+import {registerUser} from "@/http/api";
+import {useRouter} from "vue-router";
+import {FileModel} from "@/http/myAxios.ts";
 
 export default defineComponent ({
   name: "Register",
@@ -51,10 +52,9 @@ export default defineComponent ({
       userName: '',
       password: '',
       gender: 0,
-      location: '',
-      avatarUrl: ''
+      location: ''
     })
-    const files = ref([])
+    const files = ref<FileModel[]>([])
     const state = reactive({
       showArea: false
     })
@@ -66,9 +66,15 @@ export default defineComponent ({
           .map((item: any) => item.name)
           .join('/');
     }
+    const router = useRouter()
     const onResister = () => {
-      console.log(user)
-      console.log(files)
+      if (!user.location) {
+        user.location = '北京市/北京市/东城区'
+      }
+      let file = files.value[0]
+      registerUser(user.userName, user.password, user.gender, user.location, file.file).then(res=> {
+        router.push('home')
+      })
     }
     return {
       user,

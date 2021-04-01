@@ -8,6 +8,13 @@ export interface BaseResponseData {
   data?: any;
 }
 
+export interface FileModel {
+  content: string;
+  file: File;
+  message: string;
+  status: string;
+}
+
 export class MyAxios {
   instance: AxiosInstance;
 
@@ -19,7 +26,7 @@ export class MyAxios {
     this.init()
   }
 
-  public getInterceptors() {
+  getInterceptors() {
     return this.instance;
   }
 
