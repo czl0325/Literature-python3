@@ -9,6 +9,9 @@ class BaseConfig(object):
     # 如果True，会跟踪数据库信号的变化，对计算机的性能有一定的影响，如果False，不会跟踪数据库信号变化。
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    QINIU_AK = "_k1OYVrwNoF0ALCVhmlVv89pDSbIJD5GzPlXXzej"
+    QINIU_SK = "UysGleEpeyUrIdgYAifuxKyZj9qhlzqNOgWGAdeY"
+
 
 class DevConfig(BaseConfig):
     DEBUG = True

@@ -8,6 +8,7 @@ class RET:
     DATAEXIST = "4003"
     NOPARAMS = "4004"
     TOKENERROR = "4100"
+    THIRDPARTYERROR = "4200"
     UNKOWNERR = "4501"
 
 
@@ -18,6 +19,7 @@ error_map = {
     RET.DATAEXIST: u"数据已存在",
     RET.NOPARAMS: u"缺少必要参数",
     RET.TOKENERROR: u"token过期",
+    RET.THIRDPARTYERROR: u"第三方库报错",
     RET.UNKOWNERR: u"未知错误",
 }
 
