@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from "@/router/router";
 
 import 'vant/lib/index.less'
+import "./css/common.less";
 
 import {Tabbar, TabbarItem} from 'vant'
 

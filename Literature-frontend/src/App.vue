@@ -1,14 +1,14 @@
 <template>
   <router-view></router-view>
-  <van-tabbar v-model="active" active-color="#ee0a24" inactive-color="#000" v-show="route.meta.showTab">
-    <van-tabbar-item icon="wap-home">首页</van-tabbar-item>
-    <van-tabbar-item icon="label">分类</van-tabbar-item>
-    <van-tabbar-item icon="manager">我的</van-tabbar-item>
+  <van-tabbar v-model="route.meta.num" active-color="#ee0a24" inactive-color="#000" v-show="route.meta.showTab" safe-area-inset-bottom>
+    <van-tabbar-item to="home" icon="wap-home">书城</van-tabbar-item>
+    <van-tabbar-item to="category" icon="label">分类</van-tabbar-item>
+    <van-tabbar-item to="me" icon="manager">我的</van-tabbar-item>
   </van-tabbar>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { useRoute } from "vue-router";
 
 export default defineComponent({
@@ -17,11 +17,8 @@ export default defineComponent({
 
   },
   setup() {
-    const active = ref(0)
     const route = useRoute()
-
     return {
-      active,
       route
     }
   }
@@ -35,6 +32,5 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

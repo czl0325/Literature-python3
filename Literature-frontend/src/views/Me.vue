@@ -1,5 +1,9 @@
 <template>
-  <div>我的</div>
+  <div class="top-view">
+    <div class="avatar">
+
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -13,6 +17,17 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+@import "../css/common.less";
+.top-view {
+  background-color: @mainColor;
+  width: 100%;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
 
+
+}
 </style>
