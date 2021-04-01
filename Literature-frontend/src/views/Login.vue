@@ -1,5 +1,5 @@
 <template>
-  <navigation-bar title="登录" left-text="返回" fixed border left-arrow ></navigation-bar>
+  <navigation-bar title="登录"></navigation-bar>
 
   <div class="my-container">
     <van-form @submit="onLogin" style="margin-top: 20px;">

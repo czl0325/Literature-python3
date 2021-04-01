@@ -1,5 +1,5 @@
 <template>
-  <van-nav-bar @click-left="onBack" v-bind="$attrs"></van-nav-bar>
+  <van-nav-bar @click-left="onBack" left-text="返回" fixed border left-arrow  v-bind="$attrs"></van-nav-bar>
 </template>
 
 <script lang="ts">
