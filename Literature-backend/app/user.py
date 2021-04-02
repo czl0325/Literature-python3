@@ -13,8 +13,25 @@ api = Api(user_router)
 
 @user_router.route('/register', methods=['POST'])
 def register():
-    print(request.form)
-    print(request.files)
+    image_data = request.files.get("file")
+    if not image_data:
+        return ResponseData(RET.NOPARAMS).to_dict()
+    location = request.form.get('location')
+    if not location:
+        location = '北京市/北京市/东城区'
+    ls = location.split('/')
+    if len(ls) != 3:
+        return ResponseData(RET.PARAMERROR).to_dict()
+
+    user = {
+        'userName': request.form.get('userName'),
+        'password': request.form.get('password'),
+        'gender': request.form.get('gender'),
+        'province': ls[0],
+        'province': ls[0],
+
+
+    }
     return ResponseData(RET.OK).to_dict()
 
 

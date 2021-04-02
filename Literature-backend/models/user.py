@@ -13,9 +13,9 @@ class User(BaseModel, UserMixin, db.Model):
     userName = db.Column(db.String(16))
     password_hash = db.Column(db.String(20))
     gender = db.Column(db.Integer, server_default='0')  # 1 男  0女
-    city = db.Column(db.String(50))
     province = db.Column(db.String(50))
-    country = db.Column(db.String(50))
+    city = db.Column(db.String(50))
+    district = db.Column(db.String(50))
     avatarUrl = db.Column(db.String(128))
 
     # 阅读器配置
@@ -39,9 +39,9 @@ class User(BaseModel, UserMixin, db.Model):
     def updateInfo(self, data):
         self.userName = data['userName']
         self.gender = data['gender']
-        self.city = data['city']
         self.province = data['province']
-        self.country = data['country']
+        self.city = data['city']
+        self.district = data['district']
         self.avatarUrl = data['avatarUrl']
         self.update_time = datetime.now()
 
@@ -51,9 +51,9 @@ class User(BaseModel, UserMixin, db.Model):
             'openId': self.openId,
             'userName': self.userName,
             'gender': self.gender,
-            'city': self.city,
             'province': self.province,
-            'country': self.country,
+            'city': self.city,
+            'district': self.district,
             'avatarUrl': self.avatarUrl,
 
             'preference': self.preference,
