@@ -10,12 +10,13 @@
   <el-row style="height: 100%;">
     <el-col :span="4">
       <el-menu>
-        <template v-for="menu in menus" >
+        <template v-for="menu in menus">
           <el-submenu v-if="menu.child" :key="menu.path" :index="menu.index">
             <template #title>分类</template>
-            <el-menu-item v-for="subMenu in menu.child" :key="subMenu.path" :index="subMenu.path">{{ subMenu.title }}</el-menu-item>
+            <el-menu-item v-for="subMenu in menu.child" :key="subMenu.path" :index="subMenu.path" @click="menuClick(subMenu)">{{ subMenu.title }}
+            </el-menu-item>
           </el-submenu>
-          <el-menu-item v-else :key="menu.path" :index="menu.path">首页</el-menu-item>
+          <el-menu-item v-else :key="menu.path" :index="menu.path" @click="menuClick(menu)">首页</el-menu-item>
         </template>
       </el-menu>
     </el-col>
@@ -23,14 +24,10 @@
       <div>
         <div class="view-nav">
           <el-tabs v-model="act" type="card" closable>
-            <el-tab-pane label="首页"></el-tab-pane>
-            <el-tab-pane label="分类"></el-tab-pane>
+            <el-tab-pane v-for="tab in tabs" :key="tab.path" :label="tab.title"
+ @tab-click="tabClick(tab)" @tab-remove="tabRemove(tab)"></el-tab-pane>
           </el-tabs>
-          <transition name="display">
-            <keep-alive>
-              <router-view />
-            </keep-alive>
-          </transition>
+          <router-view />
         </div>
       </div>
     </el-col>
@@ -38,17 +35,54 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+import {defineComponent, ref, watch} from 'vue'
 import {menuList} from '../data/menu'
+import {useRouter, useRoute} from "vue-router";
+
+interface MenuModel {
+  index: string,
+  title: string,
+  path?: string,
+  child?: MenuModel[]
+}
+
+interface TabModel {
+  title: string,
+  path?: string
+}
 
 export default defineComponent({
   name: "Index",
   setup() {
+    const route = useRoute()
+    const router = useRouter()
     const act = ref(0)
-    const menus = ref(menuList)
+    const menus = ref<MenuModel[]>(menuList)
+    const tabs = ref<TabModel[]>([{title: '首页', path: 'home'}])
+
+    const menuClick = (menu: MenuModel) => {
+      router.push({path: `/${menu.path}`})
+      tabs.value.push({title: menu.title, path: menu.path})
+    }
+    const tabClick = (tab: TabModel) => {
+
+    }
+    const tabRemove = (tab: TabModel) => {
+
+    }
+    watch(()=>route.path, (val) => {
+      // for (let i = 0; i < tabs.value.length; i++) {
+      //   let t = tabs.value[i]
+      //
+      // }
+    })
     return {
       act,
-      menus
+      menus,
+      tabs,
+      menuClick,
+      tabClick,
+      tabRemove
     }
   }
 })
@@ -71,6 +105,7 @@ export default defineComponent({
     color: white;
   }
 }
+
 .view-nav {
   background-color: #fff;
   margin: 5px 10px;
