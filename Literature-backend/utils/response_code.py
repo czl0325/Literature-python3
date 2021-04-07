@@ -14,7 +14,7 @@ class RET:
 
 
 error_map = {
-    RET.OK: u"成功",
+    RET.OK: u"请求成功",
     RET.DBERR: u"数据库查询错误",
     RET.NODATA: u"无数据",
     RET.DATAEXIST: u"数据已存在",

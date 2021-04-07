@@ -5,13 +5,13 @@ import store from './store'
 
 import 'element-plus/lib/theme-chalk/index.css'
 // @ts-ignore
-import { ElRow, ElCol, ElMenu, ElMenuItem, ElMenuItemGroup, ElSubmenu, ElTabs, ElTabPane } from 'element-plus'
+import { ElRow, ElCol, ElMenu, ElMenuItem, ElMenuItemGroup, ElSubmenu, ElTabs, ElTabPane, ElTable, ElTableColumn, ElButton } from 'element-plus'
 import { ElMessage } from 'element-plus'
 
 import './css/reset.css'
 
 const app = createApp(App)
-const components = [ ElRow, ElCol, ElMenu, ElMenuItem, ElMenuItemGroup, ElSubmenu, ElTabs, ElTabPane]
+const components = [ ElRow, ElCol, ElMenu, ElMenuItem, ElMenuItemGroup, ElSubmenu, ElTabs, ElTabPane, ElTable, ElTableColumn, ElButton ]
 const plugins = [ ElMessage ]
 components.forEach(component => {
   app.component(component.name, component)

@@ -12,4 +12,6 @@ def create_app(config):
     app.register_blueprint(user_router)
     from .book import book_router
     app.register_blueprint(book_router)
+    from .category import cate_router
+    app.register_blueprint(cate_router)
     return app

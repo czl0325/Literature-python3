@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, watch, onMounted} from 'vue'
+import {defineComponent, ref, watch} from 'vue'
 import {menuList} from '../data/menu'
 import {useRouter, useRoute} from "vue-router";
 import {useStore} from "vuex";

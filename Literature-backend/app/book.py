@@ -7,6 +7,7 @@ book_router = Blueprint('book', __name__, url_prefix='/book')
 
 api = Api(book_router)
 
+
 """小说目录列表"""
 class ChapterListResource(Resource):
     def get(self, book_id):

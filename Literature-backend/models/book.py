@@ -37,13 +37,13 @@ class Book(BaseModel, db.Model):
     channel_type = db.Column(db.SmallInteger(), index=True)  # 书籍频道（1：男；2: 女 3: 出版 0: 无此属性默认为0）
     author_name = db.Column(db.String(50))      # 作者
     chapter_num = db.Column(db.Integer)         # 章节数量
-    is_publish = db.Column(db.Integer)          # 是否出版（1：是；2：否）
-    status = db.Column(db.Integer)              # 连载状态（1：未完结；2：已完结）
+    is_publish = db.Column(db.Integer, default=1)# 是否出版（1：是；2：否）
+    status = db.Column(db.Integer, default=1)   # 连载状态（1：未完结；2：已完结）
     cover = db.Column(db.String(300))           # 封面图片（链接）
     intro = db.Column(TEXT)                     # 简介
     word_count = db.Column(db.Integer)          # 字数
-    showed = db.Column(db.Boolean(), default=False)  # 是否上架
-    source = db.Column(db.String(50))  # 来源
+    showed = db.Column(db.Boolean(), default=True)  # 是否上架
+    source = db.Column(db.String(256))          # 爬取的网址
     ranking = db.Column(db.Integer, server_default='0')  # 排序
     short_des = db.Column(db.String(50), server_default='')  # 短描述
 
@@ -59,11 +59,9 @@ class Book(BaseModel, db.Model):
         self.chapter_num = data['chapter_num']
         self.is_publish = data['is_publish']
         self.status = data['status']
-        self.create_time = data['create_time']
         self.cover = data['cover']
         self.intro = data['intro']
         self.word_count = int(data['word_count'])
-        self.update_time = data['update_time']
         self.source = data['source']
 
     def keys(self):
@@ -72,65 +70,41 @@ class Book(BaseModel, db.Model):
     def __getitem__(self, item):
         return getattr(self, item)
 
-# class BookCategoryRelation(BaseModel, db.Model):
-#     """
-#     分类和一级分类的关系
-#     多对多关系
-#     """
-#     __tablename__ = 'tb_book_category_relation'
-#     id = db.Column(db.Integer, primary_key=True)
-#     big_cate_id = db.Column(db.Integer, db.ForeignKey('tb_book_big_category.cate_id'))
-#     cate_id = db.Column(db.Integer, db.ForeignKey('tb_book_category.cate_id'))
-
-
-BookCategoryRelation = db.Table('tb_book_category_relation',
-    db.Column('big_cate_id', db.Integer, db.ForeignKey('tb_book_big_category.cate_id')),
-    db.Column('cate_id', db.Integer, db.ForeignKey('tb_book_category.cate_id'))
-)
-
-
-class BookBigCategory(BaseModel, db.Model):
-    """ 书籍一级分类信息 """
-    __tablename__ = 'tb_book_big_category'
-
-    cate_id = db.Column(db.Integer, primary_key=True)   # 分类ID
-    cate_name = db.Column(db.String(50))                # 分类名称
-    channel = db.Column(db.Integer)                     # 频道  1:男生, 2:女生
-    showed = db.Column(db.Boolean(), default=True)
-    icon = db.Column(db.String(100))
-
-    # second_cates = db.relationship('BookCategory', secondary=BookCategoryRelation.__table__)
-
 
 class BookCategory(BaseModel, db.Model):
     """ 书籍分类信息 """
     __tablename__ = 'tb_book_category'
     cate_id = db.Column(db.Integer, primary_key=True)  # 分类ID
     cate_name = db.Column(db.String(50))  # 分类名称
-    showed = db.Column(db.Boolean(), default=True)
-    icon = db.Column(db.String(100))
+    cate_icon = db.Column(db.String(256))
 
+    def keys(self):
+        return 'cate_id', 'cate_name', 'cate_icon'
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 class BookVolume(BaseModel, db.Model):
     """ 书籍卷节信息 """
     __tablename__ = 'tb_book_volume'
-    id = db.Column(db.Integer, primary_key=True)  # ID
-    book_id = db.Column(db.Integer, index=True)  # 书籍ID
-    volume_id = db.Column(db.Integer, index=True)  # 卷ID
-    volume_name = db.Column(db.String(100))  # 卷名
-    chapter_count = db.Column(db.Integer, default=0)  # 卷字数
+    id = db.Column(db.Integer, primary_key=True)    # ID
+    book_id = db.Column(db.Integer, index=True)     # 书籍ID
+    volume_id = db.Column(db.Integer, index=True)   # 卷ID
+    volume_name = db.Column(db.String(100))         # 卷名
+    chapter_count = db.Column(db.Integer, default=0)# 卷字数
 
 
 class BookChapters(BaseModel, db.Model):
     """ 书籍章节信息 """
+    __tablename__ = 'tb_book_chapter'
     __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
 
-    id = db.Column(db.Integer, primary_key=True)  # ID
-    book_id = db.Column(db.Integer, index=True)  # 书籍ID
-    volume_id = db.Column(db.Integer, index=True)  # 卷ID
+    id = db.Column(db.Integer, primary_key=True)    # ID
+    book_id = db.Column(db.Integer, index=True)     # 书籍ID
+    volume_id = db.Column(db.Integer, nullable=True)   # 卷ID
     chapter_id = db.Column(db.Integer, index=True)  # 章节ID
-    chapter_name = db.Column(db.String(100))  # 章节名称
-    word_count = db.Column(db.Integer)  # 字数
+    chapter_name = db.Column(db.String(100))        # 章节名称
+    word_count = db.Column(db.Integer)              # 字数
 
     def __init__(self, data):
         self.book_id = int(data['book_id'])
@@ -138,8 +112,6 @@ class BookChapters(BaseModel, db.Model):
         self.chapter_id = int(data['chapter_id'])
         self.chapter_name = data['chapter_name']
         self.word_count = int(data['word_count'])
-        self.create_time = datetime.now()
-        self.update_time = datetime.now()
 
 
 class BookChapterContent(BaseModel, db.Model):
@@ -147,7 +119,7 @@ class BookChapterContent(BaseModel, db.Model):
     __tablename__ = 'tb_book_chapter_content'
     id = db.Column(db.Integer, primary_key=True)  # ID
     book_id = db.Column(db.Integer)  # 书籍ID
-    volume_id = db.Column(db.Integer)  # 卷ID
+    volume_id = db.Column(db.Integer, nullable=True)  # 卷ID
     chapter_id = db.Column(db.Integer)  # 章节ID
     content = db.Column(MEDIUMTEXT)  # 章节内容
 
