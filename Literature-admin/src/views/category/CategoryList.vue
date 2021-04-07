@@ -20,14 +20,27 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {CategoryModel} from "@/models/category";
-import {getCategoryList} from "@/http/api";
+import {getCategoryList, deleteCategory} from "@/http/api";
+import {ElMessageBox} from 'element-plus';
 
 export default defineComponent({
   name: "CategoryList",
   setup() {
     const category_list = ref<CategoryModel[]>([])
     const handleClick = (cate: CategoryModel) => {
-      console.log(cate)
+      ElMessageBox.confirm(`确认删除${cate.cate_name}分类`, '警告', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(()=>{
+        deleteCategory(cate.cate_id).then(res=>{
+          category_list.value.forEach((item, index) => {
+            if (item.cate_id === cate.cate_id) {
+              category_list.value.splice(index, 1)
+            }
+          })
+        })
+      })
     }
     getCategoryList().then((res:CategoryModel[]|any)=>{
       category_list.value = res

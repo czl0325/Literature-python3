@@ -1,6 +1,7 @@
 // 首先引入axios和上一步封装的cookie方法
 import axios, { AxiosInstance } from 'axios';
-import {ElMessage} from "element-plus";
+import {ElMessage, ElLoading} from "element-plus";
+import {ILoadingInstance} from "element-plus/lib/el-loading/src/loading.type";
 
 export interface BaseResponseData {
   code: number;
@@ -30,11 +31,17 @@ export class MyAxios {
     return this.instance;
   }
 
+  loading: ILoadingInstance | undefined
+
   // 初始化拦截器
   init() {
     // 请求接口拦截器
     this.instance.interceptors.request.use(
       config => {
+        this.loading = ElLoading.service({
+          lock: true,
+          text: '请求中...'
+        })
         return config
       },
       err => {
@@ -45,6 +52,9 @@ export class MyAxios {
     // 响应拦截器
     this.instance.interceptors.response.use(
       response => {
+        if (this.loading) {
+          this.loading.close()
+        }
         if (response.status === 200) {
           ElMessage.closeAll();
           return Promise.resolve(response.data);

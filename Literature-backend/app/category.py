@@ -36,3 +36,15 @@ def category_add():
 
     result.data = dict(category)
     return result.to_dict()
+
+
+@cate_router.route('/delete/<int:id>', methods=['GET'])
+def category_del(id):
+    result = ResponseData(RET.OK)
+    if not id:
+        result.code = RET.NOPARAMS
+        return result.to_dict()
+    cate = BookCategory.query.get(id)
+    db.session.delete(cate)
+    db.session.commit()
+    return result.to_dict()
