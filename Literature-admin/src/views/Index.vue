@@ -9,9 +9,9 @@
   </el-row>
   <el-row style="height: 100%;">
     <el-col :span="4">
-      <el-menu>
+      <el-menu :default-active="active_path">
         <template v-for="menu in menus">
-          <el-submenu v-if="menu.child" :key="menu.path" :index="menu.index">
+          <el-submenu v-if="menu.child" :key="menu.path" :index="menu.path">
             <template #title>分类</template>
             <el-menu-item v-for="subMenu in menu.child" :key="subMenu.path" :index="subMenu.path" @click="menuClick(subMenu)">{{ subMenu.title }}
             </el-menu-item>
@@ -23,9 +23,8 @@
     <el-col :span="20">
       <div>
         <div class="view-nav">
-          <el-tabs v-model="act" type="card" closable>
-            <el-tab-pane v-for="tab in tabs" :key="tab.path" :label="tab.title"
- @tab-click="tabClick(tab)" @tab-remove="tabRemove(tab)"></el-tab-pane>
+          <el-tabs v-model="active_path" type="card" closable @tab-click="tabClick" @tab-remove="tabRemove">
+            <el-tab-pane v-for="tab in tabs" :name="tab.path" :key="tab.path" :label="tab.title"></el-tab-pane>
           </el-tabs>
           <router-view />
         </div>
@@ -40,15 +39,15 @@ import {menuList} from '../data/menu'
 import {useRouter, useRoute} from "vue-router";
 
 interface MenuModel {
-  index: string,
+  name: string,
   title: string,
-  path?: string,
+  path: string,
   child?: MenuModel[]
 }
 
 interface TabModel {
   title: string,
-  path?: string
+  path: string
 }
 
 export default defineComponent({
@@ -56,28 +55,43 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const act = ref(0)
+    const active_path = ref('/home')
     const menus = ref<MenuModel[]>(menuList)
-    const tabs = ref<TabModel[]>([{title: '首页', path: 'home'}])
+    const tabs = ref<TabModel[]>([{title: '首页', path: '/home'}])
 
     const menuClick = (menu: MenuModel) => {
-      router.push({path: `/${menu.path}`})
+      router.push({path: menu.path||'/'})
       tabs.value.push({title: menu.title, path: menu.path})
+      tabs.value = sort(tabs.value)
     }
-    const tabClick = (tab: TabModel) => {
-
+    const tabClick = (tab: any) => {
+      router.push({path: tab.paneName})
     }
-    const tabRemove = (tab: TabModel) => {
-
+    const tabRemove = (path: string) => {
+      tabs.value.forEach((item, index) =>{
+        if((item.path == path) && index>0) {
+          if(active_path.value == path){
+            active_path.value = tabs.value[index-1].path;
+            router.push({path: active_path.value})
+          }
+          tabs.value.splice(index,1)
+        }
+      })
+    }
+    const sort = (arr: TabModel[]) => {
+      let temp = arr.map((item) => {
+        return JSON.stringify(item);
+      });
+      temp = Array.from(new Set(temp));
+      return temp.map((item) => {
+        return JSON.parse(item);
+      });
     }
     watch(()=>route.path, (val) => {
-      // for (let i = 0; i < tabs.value.length; i++) {
-      //   let t = tabs.value[i]
-      //
-      // }
-    })
+      active_path.value = route.path
+    }, {immediate: true})
     return {
-      act,
+      active_path,
       menus,
       tabs,
       menuClick,

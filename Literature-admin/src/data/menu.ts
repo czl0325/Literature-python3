@@ -1,18 +1,19 @@
 export const menuList = [{
-  index: 'home',
   title: '首页',
-  path: 'home'
+  name: 'Home',
+  path: '/home'
 }, {
-  index: 'category',
+  name: 'Category',
   title: '表格',
+  path: '/category',
   child: [{
-    index: 'list',
+    name: 'CategoryList',
     title: '分类列表',
-    path: 'category/list'
+    path: '/category/list'
   }, {
-    index: 'add',
+    name: 'CategoryAdd',
     title: '添加分类',
-    path: 'category/add'
+    path: '/category/add'
   }]
 }]
 
