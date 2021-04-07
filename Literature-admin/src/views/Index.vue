@@ -34,9 +34,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, watch} from 'vue'
+import {defineComponent, ref, watch, onMounted} from 'vue'
 import {menuList} from '../data/menu'
 import {useRouter, useRoute} from "vue-router";
+import {useStore} from "vuex";
 
 interface MenuModel {
   name: string,
@@ -55,14 +56,16 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
+    const store = useStore()
     const active_path = ref('/home')
     const menus = ref<MenuModel[]>(menuList)
-    const tabs = ref<TabModel[]>([{title: '首页', path: '/home'}])
+    const tabs = ref<TabModel[]>(store.state.tabs)
 
     const menuClick = (menu: MenuModel) => {
       router.push({path: menu.path||'/'})
       tabs.value.push({title: menu.title, path: menu.path})
       tabs.value = sort(tabs.value)
+      store.commit('updateTabs', tabs.value)
     }
     const tabClick = (tab: any) => {
       router.push({path: tab.paneName})
@@ -75,6 +78,7 @@ export default defineComponent({
             router.push({path: active_path.value})
           }
           tabs.value.splice(index,1)
+          store.commit('updateTabs', tabs.value)
         }
       })
     }
