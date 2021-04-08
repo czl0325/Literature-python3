@@ -1,6 +1,6 @@
 from flask_restful import Api, Resource, reqparse
 from models import db, Book
-from flask import Blueprint, current_app
+from flask import Blueprint, current_app, request
 from utils.response_code import ResponseData, RET
 
 book_router = Blueprint('book', __name__, url_prefix='/book')
@@ -8,8 +8,51 @@ book_router = Blueprint('book', __name__, url_prefix='/book')
 api = Api(book_router)
 
 
-"""小说目录列表"""
+@book_router.route('/add', methods=['POST'])
+def addBook():
+    result = ResponseData(RET.OK)
+    book_name = request.args.get('book_name')
+    channel_name = request.args.get('channel_name', type=str, default='')
+    channel_url = request.args.get('channel_url', type=str, default='')
+    author_name = request.args.get('author_name')
+    cate_id = request.args.get('cate_id')
+    cate_name = request.args.get('cate_name')
+    intro = request.args.get('intro', type=str, default='')
+    word_count = request.args.get('word_count', type=int, default=0)
+    chapter_num = request.args.get('chapter_num', type=int, default=0)
+    cover = request.args.get('cover')
+    if not book_name or not author_name or not cate_id or not cate_name:
+        result.code = RET.NOPARAMS
+        return result.to_dict()
+    book = Book({ 'book_name': book_name, 'channel_name': channel_name, 'channel_url': channel_url, 'author_name': author_name, 'cate_id': cate_id, 'cate_name': cate_name, 'intro': intro, 'word_count': word_count, 'chapter_num': chapter_num, 'cover': cover })
+    try:
+        db.session.add(book)
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        result.code = RET.DBERR
+        return result.to_dict()
+    return result.to_dict()
+
+
+@book_router.route('/list', methods=['GET'])
+def bookList():
+    result = ResponseData(RET.OK)
+    cates = request.args.get('cates', type=str, default='')
+    books = []
+    if len(cates) > 0:
+        cates = cates.split(',')
+        if len(cates) > 0:
+            books = Book.query.filter(Book.cate_id.in_(cates)).order_by(Book.create_time).all()
+    else:
+        books = Book.query.order_by(Book.create_time).all()
+    books = [dict(book) for book in books]
+    result.data = books
+    return result.to_dict()
+
+
 class ChapterListResource(Resource):
+    """小说目录列表"""
     def get(self, book_id):
         # 1.获取查询字符串参数，page/pagesize/order
         req = reqparse.RequestParser()

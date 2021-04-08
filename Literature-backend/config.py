@@ -15,6 +15,7 @@ class BaseConfig(object):
 
 class DevConfig(BaseConfig):
     DEBUG = True
+    SQLALCHEMY_ECHO = True
 
 
 class ProdConfig(BaseConfig):

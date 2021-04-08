@@ -30,7 +30,6 @@ class Book(BaseModel, db.Model):
     """ 书籍基本信息 """
     __tablename__ = 'tb_book'
     book_id = db.Column(db.Integer, primary_key=True)  # 书籍ID
-    channel_book_id = db.Column(db.String(20), unique=True)  # 渠道书籍id 渠道名:书籍id
     book_name = db.Column(db.String(100))  # 书籍名称
     cate_id = db.Column(db.Integer, index=True)  # 书籍二级分类ID
     cate_name = db.Column(db.String(50))  # 书籍二级分类名称
@@ -39,11 +38,12 @@ class Book(BaseModel, db.Model):
     chapter_num = db.Column(db.Integer)         # 章节数量
     is_publish = db.Column(db.Integer, default=1)# 是否出版（1：是；2：否）
     status = db.Column(db.Integer, default=1)   # 连载状态（1：未完结；2：已完结）
-    cover = db.Column(db.String(300))           # 封面图片（链接）
+    cover = db.Column(db.String(256))           # 封面图片（链接）
     intro = db.Column(TEXT)                     # 简介
     word_count = db.Column(db.Integer)          # 字数
     showed = db.Column(db.Boolean(), default=True)  # 是否上架
-    source = db.Column(db.String(256))          # 爬取的网址
+    channel_name = db.Column(db.String(20))     # 渠道书籍id 渠道名:书籍id
+    channel_url = db.Column(db.String(256))          # 爬取的网址
     ranking = db.Column(db.Integer, server_default='0')  # 排序
     short_des = db.Column(db.String(50), server_default='')  # 短描述
 
@@ -51,21 +51,19 @@ class Book(BaseModel, db.Model):
     heat = db.Column(db.Integer, server_default='0')  # 热度
 
     def __init__(self, data):
-        self.channel_book_id = data['channel_book_id']
         self.book_name = data['book_name']
-        self.cate_id = int(data['cate_id'])
-        self.channel_type = int(data['channel_type'])
+        self.channel_name = data['channel_name']
+        self.channel_url = data['channel_url']
         self.author_name = data['author_name']
-        self.chapter_num = data['chapter_num']
-        self.is_publish = data['is_publish']
-        self.status = data['status']
+        self.cate_id = int(data['cate_id'])
+        self.cate_name = data['cate_name']
+        self.chapter_num = int(data['chapter_num'])
         self.cover = data['cover']
         self.intro = data['intro']
         self.word_count = int(data['word_count'])
-        self.source = data['source']
 
     def keys(self):
-        return 'book_id', 'channel_book_id', 'book_name', 'cate_id', 'cate_name', 'channel_type', 'author_name', 'chapter_num', 'is_publish', 'status', 'cover', 'intro', 'word_count', 'showed', 'source', 'short_des', 'collect_count', 'heat'
+        return 'book_id', 'channel_name', 'book_name', 'cate_id', 'cate_name', 'channel_type', 'author_name', 'chapter_num', 'is_publish', 'status', 'cover', 'intro', 'word_count', 'showed', 'channel_url', 'short_des', 'collect_count', 'heat'
 
     def __getitem__(self, item):
         return getattr(self, item)

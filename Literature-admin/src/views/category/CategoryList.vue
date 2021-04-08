@@ -33,13 +33,15 @@ export default defineComponent({
         cancelButtonText: '取消',
         type: 'warning',
       }).then(()=>{
-        deleteCategory(cate.cate_id).then(res=>{
-          category_list.value.forEach((item, index) => {
-            if (item.cate_id === cate.cate_id) {
-              category_list.value.splice(index, 1)
-            }
+        if (cate.cate_id) {
+          deleteCategory(cate.cate_id).then(res=>{
+            category_list.value.forEach((item, index) => {
+              if (item.cate_id === cate.cate_id) {
+                category_list.value.splice(index, 1)
+              }
+            })
           })
-        })
+        }
       })
     }
     getCategoryList().then((res:CategoryModel[]|any)=>{

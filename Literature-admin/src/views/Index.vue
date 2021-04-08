@@ -12,7 +12,7 @@
       <el-menu :default-active="active_path">
         <template v-for="menu in menus">
           <el-submenu v-if="menu.child" :key="menu.path" :index="menu.path">
-            <template #title>分类</template>
+            <template #title>{{ menu.title }}</template>
             <el-menu-item v-for="subMenu in menu.child" :key="subMenu.path" :index="subMenu.path" @click="menuClick(subMenu)">{{ subMenu.title }}
             </el-menu-item>
           </el-submenu>
