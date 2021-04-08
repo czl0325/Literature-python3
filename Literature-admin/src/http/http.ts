@@ -1,5 +1,5 @@
 import { ElMessage } from 'element-plus'
-import {MyAxios, BaseResponseData} from "@/http/myAxios";
+import {MyAxios, BaseResponseData, FileModel} from "@/http/myAxios";
 import qs from 'qs';
 import {AxiosInstance} from "axios";
 
@@ -35,16 +35,18 @@ export class HttpService {
     });
   }
 
-  upload(url: string, file: File, params: object) {
+  upload(url: string, file: FileModel, params: object) {
     let formData = new FormData()
     let configs = {
       headers: {'Content-Type':'multipart/form-data'}
     };
+    // @ts-ignore
     formData.append('file', file)
     Object.keys(params).map((key) => {
       // @ts-ignore
       formData.append(key, params[key])
     })
+    debugger;
     return new Promise((resolve, reject) => {
       // @ts-ignore
       this.myAxios.post(url, formData, configs).then((res:BaseResponseData) => {

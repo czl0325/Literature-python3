@@ -1,17 +1,17 @@
 from .BaseModel import BaseModel, db
-from sqlalchemy.sql import func
 from sqlalchemy.dialects.mysql import TEXT, MEDIUMTEXT
 from datetime import datetime
+from flask import current_app
 
 
 class BookShelf(BaseModel, db.Model):
     """ 书架 """
     __tablename__ = 'tb_book_shelf'
     id = db.Column(db.Integer, primary_key=True)
-    book_id = db.Column(db.Integer, index=True)     # 书籍ID
-    book_name = db.Column(db.String(100))           # 书籍名称
-    cover = db.Column(db.String(300))               # 封面图片（文件名）
-    user_id = db.Column(db.Integer)                 # 用户id
+    book_id = db.Column(db.Integer, index=True)  # 书籍ID
+    book_name = db.Column(db.String(100))  # 书籍名称
+    cover = db.Column(db.String(300))  # 封面图片（文件名）
+    user_id = db.Column(db.Integer)  # 用户id
     db.Index('ix_book_id_user_id', book_id, user_id, unique=True)
 
 
@@ -34,16 +34,16 @@ class Book(BaseModel, db.Model):
     cate_id = db.Column(db.Integer, index=True)  # 书籍二级分类ID
     cate_name = db.Column(db.String(50))  # 书籍二级分类名称
     channel_type = db.Column(db.SmallInteger(), index=True)  # 书籍频道（1：男；2: 女 3: 出版 0: 无此属性默认为0）
-    author_name = db.Column(db.String(50))      # 作者
-    chapter_num = db.Column(db.Integer)         # 章节数量
-    is_publish = db.Column(db.Integer, default=1)# 是否出版（1：是；2：否）
-    status = db.Column(db.Integer, default=1)   # 连载状态（1：未完结；2：已完结）
-    cover = db.Column(db.String(256))           # 封面图片（链接）
-    intro = db.Column(TEXT)                     # 简介
-    word_count = db.Column(db.Integer)          # 字数
+    author_name = db.Column(db.String(50))  # 作者
+    chapter_num = db.Column(db.Integer)  # 章节数量
+    is_publish = db.Column(db.Integer, default=1)  # 是否出版（1：是；2：否）
+    status = db.Column(db.Integer, default=1)  # 连载状态（1：未完结；2：已完结）
+    cover = db.Column(db.String(256))  # 封面图片（链接）
+    intro = db.Column(TEXT)  # 简介
+    word_count = db.Column(db.Integer)  # 字数
     showed = db.Column(db.Boolean(), default=True)  # 是否上架
-    channel_name = db.Column(db.String(20))     # 渠道书籍id 渠道名:书籍id
-    channel_url = db.Column(db.String(256))          # 爬取的网址
+    channel_name = db.Column(db.String(20))  # 渠道书籍id 渠道名:书籍id
+    channel_url = db.Column(db.String(256))  # 爬取的网址
     ranking = db.Column(db.Integer, server_default='0')  # 排序
     short_des = db.Column(db.String(50), server_default='')  # 短描述
 
@@ -76,20 +76,19 @@ class BookCategory(BaseModel, db.Model):
     cate_name = db.Column(db.String(50))  # 分类名称
     cate_icon = db.Column(db.String(256))
 
-    def keys(self):
-        return 'cate_id', 'cate_name', 'cate_icon'
+    def to_dict(self):
+        return {'cate_id': self.cate_id, 'cate_name': self.cate_name,
+                'cate_icon': "http://127.0.0.1:5000" + self.cate_icon if self.cate_icon.startswith("/static") else current_app.config["QINIU_URLPREFIX"] + self.cate_icon }
 
-    def __getitem__(self, item):
-        return getattr(self, item)
 
 class BookVolume(BaseModel, db.Model):
     """ 书籍卷节信息 """
     __tablename__ = 'tb_book_volume'
-    id = db.Column(db.Integer, primary_key=True)    # ID
-    book_id = db.Column(db.Integer, index=True)     # 书籍ID
-    volume_id = db.Column(db.Integer, index=True)   # 卷ID
-    volume_name = db.Column(db.String(100))         # 卷名
-    chapter_count = db.Column(db.Integer, default=0)# 卷字数
+    id = db.Column(db.Integer, primary_key=True)  # ID
+    book_id = db.Column(db.Integer, index=True)  # 书籍ID
+    volume_id = db.Column(db.Integer, index=True)  # 卷ID
+    volume_name = db.Column(db.String(100))  # 卷名
+    chapter_count = db.Column(db.Integer, default=0)  # 卷字数
 
 
 class BookChapters(BaseModel, db.Model):
@@ -97,12 +96,12 @@ class BookChapters(BaseModel, db.Model):
     __tablename__ = 'tb_book_chapter'
     __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
 
-    id = db.Column(db.Integer, primary_key=True)    # ID
-    book_id = db.Column(db.Integer, index=True)     # 书籍ID
-    volume_id = db.Column(db.Integer, nullable=True)   # 卷ID
+    id = db.Column(db.Integer, primary_key=True)  # ID
+    book_id = db.Column(db.Integer, index=True)  # 书籍ID
+    volume_id = db.Column(db.Integer, nullable=True)  # 卷ID
     chapter_id = db.Column(db.Integer, index=True)  # 章节ID
-    chapter_name = db.Column(db.String(100))        # 章节名称
-    word_count = db.Column(db.Integer)              # 字数
+    chapter_name = db.Column(db.String(100))  # 章节名称
+    word_count = db.Column(db.Integer)  # 字数
 
     def __init__(self, data):
         self.book_id = int(data['book_id'])
@@ -134,4 +133,3 @@ class BookChapterContent(BaseModel, db.Model):
     def update(self, data):
         self.content = data['content'].replace('　', '').replace(' ', '')
         self.update_time = datetime.now()
-
