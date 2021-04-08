@@ -11,16 +11,16 @@ api = Api(book_router)
 @book_router.route('/add', methods=['POST'])
 def addBook():
     result = ResponseData(RET.OK)
-    book_name = request.args.get('book_name')
-    channel_name = request.args.get('channel_name', type=str, default='')
-    channel_url = request.args.get('channel_url', type=str, default='')
-    author_name = request.args.get('author_name')
-    cate_id = request.args.get('cate_id')
-    cate_name = request.args.get('cate_name')
-    intro = request.args.get('intro', type=str, default='')
-    word_count = request.args.get('word_count', type=int, default=0)
-    chapter_num = request.args.get('chapter_num', type=int, default=0)
-    cover = request.args.get('cover')
+    book_name = request.form.get('book_name')
+    channel_name = request.form.get('channel_name', type=str, default='')
+    channel_url = request.form.get('channel_url', type=str, default='')
+    author_name = request.form.get('author_name')
+    cate_id = request.form.get('cate_id')
+    cate_name = request.form.get('cate_name')
+    intro = request.form.get('intro', type=str, default='')
+    word_count = request.form.get('word_count', type=int, default=0)
+    chapter_num = request.form.get('chapter_num', type=int, default=0)
+    cover = request.form.get('cover')
     if not book_name or not author_name or not cate_id or not cate_name:
         result.code = RET.NOPARAMS
         return result.to_dict()
@@ -32,6 +32,7 @@ def addBook():
         current_app.logger.error(e)
         result.code = RET.DBERR
         return result.to_dict()
+    result.data = dict(book)
     return result.to_dict()
 
 
