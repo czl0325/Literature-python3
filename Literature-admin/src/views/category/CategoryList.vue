@@ -5,7 +5,7 @@
       <el-table-column prop="cate_name" label="分类名称" />
       <el-table-column prop="cate_icon" label="封面" width="200" >
         <template #default="scope">
-          <img :src="`http://127.0.0.1:5000/${scope.row.cate_icon}`" style="width: 60px;height: 60px;">
+          <img :src="scope.row.cate_icon" style="width: 60px;height: 60px;object-fit: cover;">
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="100">
@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
-import {CategoryModel} from "@/models/category";
+import {CategoryModel} from "@/models/models";
 import {getCategoryList, deleteCategory} from "@/http/api";
 import {ElMessageBox} from 'element-plus';
 
@@ -33,13 +33,15 @@ export default defineComponent({
         cancelButtonText: '取消',
         type: 'warning',
       }).then(()=>{
-        deleteCategory(cate.cate_id).then(res=>{
-          category_list.value.forEach((item, index) => {
-            if (item.cate_id === cate.cate_id) {
-              category_list.value.splice(index, 1)
-            }
+        if (cate.cate_id) {
+          deleteCategory(cate.cate_id).then(()=>{
+            category_list.value.forEach((item, index) => {
+              if (item.cate_id === cate.cate_id) {
+                category_list.value.splice(index, 1)
+              }
+            })
           })
-        })
+        }
       })
     }
     getCategoryList().then((res:CategoryModel[]|any)=>{

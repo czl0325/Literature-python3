@@ -10,10 +10,13 @@ export interface BaseResponseData {
 }
 
 export interface FileModel {
-  content: string;
-  file: File;
-  message: string;
-  status: string;
+  lastModified: number;
+  lastModifiedDate: Date;
+  name: string;
+  size: number;
+  type: string;
+  uid: number;
+  webkitRelativePath: string;
 }
 
 export class MyAxios {
@@ -64,6 +67,9 @@ export class MyAxios {
         }
       },
       err => {
+        if (this.loading) {
+          this.loading.close()
+        }
         const {response} = err;
         if (response) {
           ElMessage.error(err.message);

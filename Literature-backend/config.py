@@ -11,10 +11,13 @@ class BaseConfig(object):
 
     QINIU_AK = "_k1OYVrwNoF0ALCVhmlVv89pDSbIJD5GzPlXXzej"
     QINIU_SK = "UysGleEpeyUrIdgYAifuxKyZj9qhlzqNOgWGAdeY"
+    QINIU_BUCKETNAME = "literature-czl"
+    QINIU_URLPREFIX = "http://qqvpxfcfz.hn-bkt.clouddn.com/"
 
 
 class DevConfig(BaseConfig):
     DEBUG = True
+    SQLALCHEMY_ECHO = True
 
 
 class ProdConfig(BaseConfig):

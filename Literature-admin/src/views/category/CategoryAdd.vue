@@ -3,18 +3,24 @@
     <el-form-item label="分类名称" prop="cate_name">
       <el-input v-model="category.cate_name" />
     </el-form-item>
-    <el-form-item label="分类图片">
-      <el-upload class="avatar-uploader" :show-file-list="false" action="">
-        <img v-if="category.cate_icon" :src="category.cate_icon" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+    <el-form-item label="分类图片" >
+      <el-upload action="#" :before-upload="beforeImageUpload">
+        <el-button size="small" type="primary">选择图片</el-button>
+        <span style="display: inline; margin-left: 10px;">{{ uploadFile.name }}</span>
       </el-upload>
+    </el-form-item>
+    <el-form-item>
+      <el-button style="margin-top: 30px;" type="primary" @click="onAddCategory">立即添加分类</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
-import {CategoryModel} from "@/models/category";
+import {CategoryModel} from "@/models/models";
+import {FileModel} from "@/http/myAxios";
+import {addCategory} from "@/http/api";
+import {ElMessage} from "element-plus";
 
 export default defineComponent ({
   name: "CategoryAdd",
@@ -25,9 +31,21 @@ export default defineComponent ({
         {required: true, message: '请输入分类名称', trigger: 'blur'},
       ]
     }
+    const uploadFile = ref<FileModel|any>({})
+    const beforeImageUpload = (file: FileModel) => {
+      uploadFile.value = file
+    }
+    const onAddCategory = () => {
+      addCategory(uploadFile.value, category.value.cate_name).then(res=>{
+        ElMessage.success('添加成功')
+      })
+    }
     return {
       category,
-      rules
+      rules,
+      uploadFile,
+      beforeImageUpload,
+      onAddCategory
     }
   }
 })
@@ -47,10 +65,11 @@ export default defineComponent ({
 }
 .avatar-uploader-icon {
   font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
+  background-color: #8c939d;
+  color: white;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
   text-align: center;
 }
 .avatar {
