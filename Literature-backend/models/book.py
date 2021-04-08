@@ -105,10 +105,15 @@ class BookChapters(BaseModel, db.Model):
 
     def __init__(self, data):
         self.book_id = int(data['book_id'])
-        self.volume_id = int(data['volume_id'])
         self.chapter_id = int(data['chapter_id'])
         self.chapter_name = data['chapter_name']
         self.word_count = int(data['word_count'])
+
+    def keys(self):
+        return 'book_id', 'chapter_id', 'chapter_name', 'word_count'
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 class BookChapterContent(BaseModel, db.Model):

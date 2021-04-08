@@ -27,3 +27,11 @@ export const addBook = (book: BookModel) => {
     ...book
   })
 }
+
+export const getBookDetail = (book_id: number) => {
+  return http1.get(`/book/detail/${book_id}`)
+}
+
+export const getChapterList = (book_id: number) => {
+  return http1.get(`/book/chapter/list/${book_id}`)
+}

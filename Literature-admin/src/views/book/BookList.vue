@@ -33,7 +33,7 @@ export default defineComponent({
     const router = useRouter()
     const book_list = ref<BookModel[]>([])
     const handleLook = (index: number, book: BookModel) => {
-      router.push({path: `/book/detail?id=${book.book_id}`})
+      router.push({path: '/book/add', query: {id: book.book_id}})
     }
     const handleDelete = (index: number, book: BookModel) => {
 

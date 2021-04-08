@@ -26,3 +26,10 @@ export interface BookModel {
   collect_count?: number;
   heat?: number;
 }
+
+export interface ChapterModel {
+  book_id: number;
+  chapter_id: number;
+  chapter_name: string;
+  word_count: number;
+}
