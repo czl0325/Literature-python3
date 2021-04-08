@@ -39,13 +39,9 @@ def addBook():
 def bookList():
     result = ResponseData(RET.OK)
     cates = request.args.get('cates', type=str, default='')
-    books = []
-    if len(cates) > 0:
-        cates = cates.split(',')
-        if len(cates) > 0:
-            books = Book.query.filter(Book.cate_id.in_(cates)).order_by(Book.create_time).all()
-    else:
-        books = Book.query.order_by(Book.create_time).all()
+    books = Book.query.order_by(Book.create_time)
+    if cates:
+        books = books.filter(Book.cate_id.in_(cates.split(",")))
     books = [dict(book) for book in books]
     result.data = books
     return result.to_dict()

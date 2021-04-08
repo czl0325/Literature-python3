@@ -13,8 +13,8 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="160">
         <template #default="scope">
-          <el-button @click="handleClick(scope.row)" size="small" type="primary" round>查看</el-button>
-          <el-button @click="handleClick(scope.row)" size="small" type="danger" round>删除</el-button>
+          <el-button @click="handleLook(scope.$index, scope.row)" size="small" type="primary" round>查看</el-button>
+          <el-button @click="handleDelete(scope.$index, scope.row)" size="small" type="danger" round>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -30,7 +30,10 @@ export default defineComponent({
   name: "BookList",
   setup() {
     const book_list = ref<BookModel[]>([])
-    const handleClick = () => {
+    const handleLook = (index: number, book: BookModel) => {
+
+    }
+    const handleDelete = (index: number, book: BookModel) => {
 
     }
     getBookList().then((res: BookModel[] | any) =>{
@@ -38,7 +41,8 @@ export default defineComponent({
     })
     return {
       book_list,
-      handleClick
+      handleLook,
+      handleDelete
     }
   }
 })
