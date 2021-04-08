@@ -25,8 +25,16 @@ def addBook():
         result.code = RET.NOPARAMS
         return result.to_dict()
     book = Book({ 'book_name': book_name, 'channel_name': channel_name, 'channel_url': channel_url, 'author_name': author_name, 'cate_id': cate_id, 'cate_name': cate_name, 'intro': intro, 'word_count': word_count, 'chapter_num': chapter_num, 'cover': cover })
+    book_id = request.form.get('book_id')
+    if book_id:
+        book.book_id = book_id
     try:
-        db.session.add(book)
+        if book_id:
+            old_book = Book.query.get(book_id)
+            for key in book:
+                old_book[key] = book[key]
+        else:
+            db.session.add(book)
         db.session.commit()
     except Exception as e:
         current_app.logger.error(e)
