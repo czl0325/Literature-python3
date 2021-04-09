@@ -8,7 +8,7 @@
         <el-input v-model="chapter.chapter_name" />
       </el-form-item>
       <el-form-item label="章节内容">
-        <el-input v-model="chapter.chapter_content" type="textarea" />
+        <el-input v-model="chapter.content" type="textarea" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onAddChapter">{{ chapter.chapter_id ? '更新章节' : '立即添加' }}</el-button>
@@ -29,14 +29,17 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const book_id = route.query.book_id
-    const chapter_id = route.query.chapter_id
+    const c_id = route.query.c_id
     const chapter = ref<ChapterModel>({})
-    if (typeof chapter_id === 'string') {
-      chapter.value.chapter_id = parseInt(chapter_id)
+    if (typeof book_id === 'string') {
+      chapter.value.book_id = parseInt(book_id)
+    }
+    if (typeof c_id === 'string') {
+      chapter.value.id = parseInt(c_id)
     }
     const onAddChapter = () => {
       if (typeof book_id === 'string' && book_id.length > 0) {
-        addChapter(parseInt(book_id), chapter.value.chapter_id || 0, chapter.value.chapter_name || '', chapter.value.chapter_content || '').then(() => {
+        addChapter(chapter.value).then(() => {
           ElMessage.success('添加章节成功!')
           if (!chapter.value.chapter_id) {
             chapter.value = {}

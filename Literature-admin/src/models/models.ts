@@ -33,5 +33,5 @@ export interface ChapterModel {
   chapter_id?: number;
   chapter_name?: string;
   word_count?: number;
-  chapter_content?: string;
+  content?: string;
 }

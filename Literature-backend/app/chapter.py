@@ -49,3 +49,17 @@ def chapterAdd(book_id):
         current_app.logger.error(e)
         db.session.rollback()
     return result.to_dict()
+
+
+@chapter_router.route('/<int:id>', methods=['GET'])
+def chapterDetail(id):
+    result = ResponseData(RET.OK)
+    if not id:
+        result.code = RET.NOPARAMS
+        return result.to_dict()
+    chapter = BookChapters.query.get(id)
+    if not chapter:
+        result.code = RET.NODATA
+        return result.to_dict()
+
+    return result.to_dict()
