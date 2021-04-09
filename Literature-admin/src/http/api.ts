@@ -1,6 +1,6 @@
 import {http1} from "@/http/http";
 import {FileModel} from '@/http/myAxios'
-import {BookModel} from "@/models/models";
+import {BookModel, ChapterModel} from "@/models/models";
 
 export const getCategoryList = () => {
   return http1.get('/category/list')
@@ -33,5 +33,15 @@ export const getBookDetail = (book_id: number) => {
 }
 
 export const getChapterList = (book_id: number) => {
-  return http1.get(`/book/chapter/list/${book_id}`)
+  return http1.get(`/chapter/list/${book_id}`)
+}
+
+export const addChapter = (chapter: ChapterModel) => {
+  return http1.post(`/chapter/add/${chapter.book_id}`, {
+    ...chapter
+  })
+}
+
+export const getChapterDetail = (id: number) => {
+  return http1.get(`/chapter/${id}`)
 }

@@ -51,22 +51,36 @@ class Book(BaseModel, db.Model):
     heat = db.Column(db.Integer, server_default='0')  # 热度
 
     def __init__(self, data):
-        self.book_name = data['book_name']
-        self.channel_name = data['channel_name']
-        self.channel_url = data['channel_url']
-        self.author_name = data['author_name']
-        self.cate_id = int(data['cate_id'])
-        self.cate_name = data['cate_name']
-        self.chapter_num = int(data['chapter_num'])
-        self.cover = data['cover']
-        self.intro = data['intro']
-        self.word_count = int(data['word_count'])
+        if data["book_name"]:
+            self.book_name = data["book_name"]
+        if data['channel_name']:
+            self.channel_name = data['channel_name']
+        if data['channel_url']:
+            self.channel_url = data['channel_url']
+        if ['author_name']:
+            self.author_name = data['author_name']
+        if data['cate_id']:
+            self.cate_id = int(data['cate_id'])
+        if data['cate_name']:
+            self.cate_name = data['cate_name']
+        if data['intro']:
+            self.intro = data['intro']
+        if data['word_count']:
+            self.word_count = int(data['word_count'])
+        if data['chapter_num']:
+            self.chapter_num = int(data['chapter_num'])
+        if data['cover']:
+            self.cover = data['cover']
 
     def keys(self):
         return 'book_id', 'channel_name', 'book_name', 'cate_id', 'cate_name', 'channel_type', 'author_name', 'chapter_num', 'is_publish', 'status', 'cover', 'intro', 'word_count', 'showed', 'channel_url', 'short_des', 'collect_count', 'heat'
 
     def __getitem__(self, item):
         return getattr(self, item)
+
+    def __setitem__(self, key, value):
+        if value is not None:
+            self.key = value
 
 
 class BookCategory(BaseModel, db.Model):
@@ -102,12 +116,7 @@ class BookChapters(BaseModel, db.Model):
     chapter_id = db.Column(db.Integer, index=True)  # 章节ID
     chapter_name = db.Column(db.String(100))  # 章节名称
     word_count = db.Column(db.Integer)  # 字数
-
-    def __init__(self, data):
-        self.book_id = int(data['book_id'])
-        self.chapter_id = int(data['chapter_id'])
-        self.chapter_name = data['chapter_name']
-        self.word_count = int(data['word_count'])
+    content = db.relationship("BookChapterContent", backref="chapter", uselist=False)
 
     def keys(self):
         return 'book_id', 'chapter_id', 'chapter_name', 'word_count'
@@ -119,22 +128,5 @@ class BookChapters(BaseModel, db.Model):
 class BookChapterContent(BaseModel, db.Model):
     """ 书籍章节内容信息 """
     __tablename__ = 'tb_book_chapter_content'
-    id = db.Column(db.Integer, primary_key=True)  # ID
-    book_id = db.Column(db.Integer)  # 书籍ID
-    volume_id = db.Column(db.Integer, nullable=True)  # 卷ID
-    chapter_id = db.Column(db.Integer)  # 章节ID
+    id = db.Column(db.Integer, db.ForeignKey('tb_book_chapter.id'), primary_key=True)
     content = db.Column(MEDIUMTEXT)  # 章节内容
-
-    db.Index('ix_book_id_chapter_id', book_id, chapter_id)
-
-    def __init__(self, data):
-        self.book_id = int(data['book_id'])
-        self.volume_id = int(data['volume_id'])
-        self.chapter_id = int(data['chapter_id'])
-        self.content = data['content'].replace('　', '').replace(' ', '')
-        self.create_time = datetime.now()
-        self.update_time = datetime.now()
-
-    def update(self, data):
-        self.content = data['content'].replace('　', '').replace(' ', '')
-        self.update_time = datetime.now()

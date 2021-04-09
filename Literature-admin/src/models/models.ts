@@ -28,8 +28,10 @@ export interface BookModel {
 }
 
 export interface ChapterModel {
-  book_id: number;
-  chapter_id: number;
-  chapter_name: string;
-  word_count: number;
+  id?: number;
+  book_id?: number ;
+  chapter_id?: number;
+  chapter_name?: string;
+  word_count?: number;
+  content?: string;
 }
