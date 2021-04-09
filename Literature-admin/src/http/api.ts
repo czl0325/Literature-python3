@@ -33,5 +33,13 @@ export const getBookDetail = (book_id: number) => {
 }
 
 export const getChapterList = (book_id: number) => {
-  return http1.get(`/book/chapter/list/${book_id}`)
+  return http1.get(`/chapter/list/${book_id}`)
+}
+
+export const addChapter = (book_id: number, chapter_id: number, chapter_name: string, chapter_content?: string) => {
+  return http1.post(`/chapter/add/${book_id}`, {
+    chapter_id,
+    chapter_name,
+    chapter_content
+  })
 }

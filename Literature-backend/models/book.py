@@ -117,11 +117,11 @@ class BookChapters(BaseModel, db.Model):
     chapter_name = db.Column(db.String(100))  # 章节名称
     word_count = db.Column(db.Integer)  # 字数
 
-    def __init__(self, data):
-        self.book_id = int(data['book_id'])
-        self.chapter_id = int(data['chapter_id'])
-        self.chapter_name = data['chapter_name']
-        self.word_count = int(data['word_count'])
+    # def __init__(self, data):
+    #     self.book_id = int(data['book_id'])
+    #     self.chapter_id = int(data['chapter_id'])
+    #     self.chapter_name = data['chapter_name']
+    #     self.word_count = int(data['word_count'])
 
     def keys(self):
         return 'book_id', 'chapter_id', 'chapter_name', 'word_count'
@@ -141,13 +141,13 @@ class BookChapterContent(BaseModel, db.Model):
 
     db.Index('ix_book_id_chapter_id', book_id, chapter_id)
 
-    def __init__(self, data):
-        self.book_id = int(data['book_id'])
-        self.volume_id = int(data['volume_id'])
-        self.chapter_id = int(data['chapter_id'])
-        self.content = data['content'].replace('　', '').replace(' ', '')
-        self.create_time = datetime.now()
-        self.update_time = datetime.now()
+    # def __init__(self, data):
+    #     self.book_id = int(data['book_id'])
+    #     self.volume_id = int(data['volume_id'])
+    #     self.chapter_id = int(data['chapter_id'])
+    #     self.content = data['content'].replace('　', '').replace(' ', '')
+    #     self.create_time = datetime.now()
+    #     self.update_time = datetime.now()
 
     def update(self, data):
         self.content = data['content'].replace('　', '').replace(' ', '')
