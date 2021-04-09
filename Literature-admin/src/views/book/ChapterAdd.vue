@@ -34,7 +34,7 @@ export default defineComponent({
     if (typeof book_id === 'string') {
       chapter.value.book_id = parseInt(book_id)
     }
-    if (typeof c_id === 'string') {
+    if (typeof c_id === 'string' && c_id.length > 0) {
       chapter.value.id = parseInt(c_id)
     }
     const onAddChapter = () => {

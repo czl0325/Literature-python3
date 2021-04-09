@@ -8,7 +8,7 @@
       <el-table-column prop="chapter_name" label="标题" />
       <el-table-column fixed="right" label="操作" width="100">
         <template #default="scope">
-          <el-button size="small" type="primary" round @click="toChapter(scope.$index, scope.row)">编辑章节</el-button>
+          <el-button size="small" type="primary" round @click="toChapter(scope.row)">编辑章节</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -34,12 +34,16 @@ export default defineComponent({
         chapter_list.value = res
       })
     }
-    const toChapter = (index: number, chapter: ChapterModel) => {
+    const toChapter = (chapter: ChapterModel) => {
       if (!book_id) {
         ElMessage.error('书籍信息错误')
         return;
       }
-      router.push( { path: '/book/chapter/add', query: { book_id: book_id, chapter_id:  chapter.chapter_id } } )
+      if (chapter) {
+        router.push( { path: '/book/chapter/add', query: { book_id: book_id, c_id:  chapter.id } } )
+      } else {
+        router.push( { path: '/book/chapter/add', query: { book_id: book_id } } )
+      }
     }
     return {
       chapter_list,

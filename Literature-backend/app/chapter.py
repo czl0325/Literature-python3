@@ -41,9 +41,8 @@ def chapterAdd(book_id):
                 chapter_detail.content = chapter_content
         else:
             chapter = BookChapters(book_id=book_id, chapter_id=chapter_id, chapter_name=chapter_name, word_count=len(chapter_content))
+            chapter.content = chapter_content
             db.session.add(chapter)
-            chapter_detail = BookChapterContent(book_id=book_id, chapter_id=chapter_id, content=chapter_content)
-            db.session.add(chapter_detail)
         db.session.commit()
     except Exception as e:
         current_app.logger.error(e)
