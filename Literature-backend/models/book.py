@@ -57,7 +57,7 @@ class Book(BaseModel, db.Model):
             self.channel_name = data['channel_name']
         if data['channel_url']:
             self.channel_url = data['channel_url']
-        if ['author_name']:
+        if data['author_name']:
             self.author_name = data['author_name']
         if data['cate_id']:
             self.cate_id = int(data['cate_id'])
@@ -69,7 +69,7 @@ class Book(BaseModel, db.Model):
             self.word_count = int(data['word_count'])
         if data['chapter_num']:
             self.chapter_num = int(data['chapter_num'])
-        if data['cover']:
+        if hasattr(data, 'cover') and data['cover']:
             self.cover = data['cover']
 
     def keys(self):
