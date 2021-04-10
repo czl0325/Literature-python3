@@ -21,6 +21,7 @@ idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.3
 limits==1.5.1
+lxml==4.6.3
 Mako==1.1.4
 MarkupSafe==1.1.1
 pycparser==2.20
