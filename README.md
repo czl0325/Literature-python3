@@ -1,53 +1,25 @@
 # Literature-python3
-电子书网站模板。前后端分离，前端采用vue3+vant-ui开发，后端采用python3.9+flask开发。
+我写的小说电子书网站。前后端分离，前端采用vue3+typescript+vant-ui开发，后端采用python3.9+flask开发。后台管理系统采用vue3+typescript+elementui-plus开发
 
 
-### 1. 创建虚拟环境
+#### 介绍
 
-首先安装虚拟环境
-```
-pip3 install virtualenv
-pip3 install virtualenvwrapper
-```
-
-在~目录下创建.bashrc文件
-```
-export WORKON_HOME=~/.environments
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-source /usr/local/bin/virtualenvwrapper.sh
-```
-
-需要重新刷新下
-```
-source ~/.bashrc
-```
-
-* mkvirtualenv -p python3 literature
-* workon literature
-* pip install -r requirments.txt  (项目运行所用到的包)
+* Literature-frontend ： 手机端页面代码
+* Literature-backend ： 服务端代码
+* Literature-admin ： 后台管理系统代码
 
 
-### 2. 数据库迁移
+#### 运行
 
-* 需要用到两个库
-    * Flask-Script
-    * Flask-Migrate
-    * mysqlclient
+* 1.服务端运行
 
-* 迁移步骤
-    * 生成迁移文件夹 `python3 manage.py db init`
-    * 生成迁移脚本 `python3 manage.py db migrate -m '描述信息'`
-    * 执行迁移脚本 `python3 manage.py db upgrade`
-  
-* 遇到错误
+  * 自行创建python虚拟环境，或者用pycharm直接打开Literature-backend文件夹，会自动安装虚拟环境并且下载所需要的库
+  * 在Literature-backend目录下创建一个logs文件夹。
+  * 自行安装mysql，并且创建一个叫Literature的数据库。根据Migrate命令生成表。详见Literature-backend内的文档
+  * 启动服务器后，运行crawler.py文件开始爬取笔趣阁的小说。
 
-  * sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on 'localhost' ([Errno 61] Connection refused)")
 
-    因为连接的是mysql8，mysql8改变了密码的加密方式，你在安装mysql8的时候设置的密码在这里输入是没用的，请重新设置密码，加密方式改为mysql_native_password。
-```
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '111111';
-```
+* 2.vue3代码运行
 
-  * `ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement`
-
-修改/private/etc/my.cnf文件注释掉--skip-grant-tables
+  * 进入目录后先npm install
+  * 在运行npm run serve
