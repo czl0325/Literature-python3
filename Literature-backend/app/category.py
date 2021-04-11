@@ -17,13 +17,17 @@ def category_list():
 
 @cate_router.route('/add', methods=['POST'])
 def category_add():
-    category = BookCategory()
     result = ResponseData(RET.OK)
     cate_name = request.form.get('cate_name')
     if not cate_name:
         result.code = RET.NOPARAMS
         return result.to_dict()
-    category.cate_name = cate_name
+    category = BookCategory.query.filter_by(cate_name=cate_name).first()
+    if not category:
+        category = BookCategory(cate_name=cate_name)
+    else:
+        result.data = category.to_dict()
+        return result.to_dict()
     file = request.files.get('file')
     if not file:
         category.cate_icon = '/static/img/cate_cover.jpeg'
@@ -42,7 +46,7 @@ def category_add():
         print(current_app.logger.error(e))
         result.code = RET.DBERR
         return result.to_dict()
-    result.data = dict(category)
+    result.data = category.to_dict()
     return result.to_dict()
 
 

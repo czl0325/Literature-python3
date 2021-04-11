@@ -39,8 +39,8 @@ class Book(BaseModel, db.Model):
     is_publish = db.Column(db.Integer, default=1)  # 是否出版（1：是；2：否）
     status = db.Column(db.Integer, default=1)  # 连载状态（1：未完结；2：已完结）
     cover = db.Column(db.String(256))  # 封面图片（链接）
-    intro = db.Column(TEXT)  # 简介
-    word_count = db.Column(db.Integer)  # 字数
+    intro = db.Column(TEXT, default='暂无简介')  # 简介
+    word_count = db.Column(db.Integer, default=0)  # 字数
     showed = db.Column(db.Boolean(), default=True)  # 是否上架
     channel_name = db.Column(db.String(20))  # 渠道书籍id 渠道名:书籍id
     channel_url = db.Column(db.String(256))  # 爬取的网址
@@ -51,25 +51,27 @@ class Book(BaseModel, db.Model):
     heat = db.Column(db.Integer, server_default='0')  # 热度
 
     def __init__(self, data):
-        if data["book_name"]:
+        if 'book_id' in data.keys() and data['book_id']:
+            self.book_id = data["book_id"]
+        if 'book_name' in data.keys() and data['book_name']:
             self.book_name = data["book_name"]
-        if data['channel_name']:
+        if 'channel_name' in data.keys() and data['channel_name']:
             self.channel_name = data['channel_name']
-        if data['channel_url']:
+        if 'channel_url' in data.keys() and data['channel_url']:
             self.channel_url = data['channel_url']
-        if data['author_name']:
+        if 'author_name' in data.keys() and data['author_name']:
             self.author_name = data['author_name']
-        if data['cate_id']:
+        if 'cate_id' in data.keys() and data['cate_id']:
             self.cate_id = int(data['cate_id'])
-        if data['cate_name']:
+        if 'cate_name' in data.keys() and data['cate_name']:
             self.cate_name = data['cate_name']
-        if data['intro']:
+        if 'intro' in data.keys() and data['intro']:
             self.intro = data['intro']
-        if data['word_count']:
+        if 'word_count' in data.keys() and data['word_count']:
             self.word_count = int(data['word_count'])
-        if data['chapter_num']:
+        if 'chapter_num' in data.keys() and data['chapter_num']:
             self.chapter_num = int(data['chapter_num'])
-        if hasattr(data, 'cover') and data['cover']:
+        if 'cover' in data.keys() and data['cover']:
             self.cover = data['cover']
 
     def keys(self):
@@ -91,8 +93,10 @@ class BookCategory(BaseModel, db.Model):
     cate_icon = db.Column(db.String(256))
 
     def to_dict(self):
-        return {'cate_id': self.cate_id, 'cate_name': self.cate_name,
-                'cate_icon': "http://127.0.0.1:5000" + self.cate_icon if self.cate_icon.startswith("/static") else current_app.config["QINIU_URLPREFIX"] + self.cate_icon }
+        cate_icon = "http://127.0.0.1:5000" + self.cate_icon if self.cate_icon.startswith("/static") else self.cate_icon
+        if not cate_icon.startswith('http'):
+            cate_icon = current_app.config["QINIU_URLPREFIX"] + self.cate_icon
+        return {'cate_id': self.cate_id, 'cate_name': self.cate_name, 'cate_icon': cate_icon }
 
 
 class BookVolume(BaseModel, db.Model):

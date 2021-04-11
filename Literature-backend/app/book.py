@@ -26,7 +26,13 @@ def addBook():
         if not book_name or not author_name or not cate_id or not cate_name:
             result.code = RET.NOPARAMS
             return result.to_dict()
-    book = Book({ 'book_name': book_name, 'channel_name': channel_name, 'channel_url': channel_url, 'author_name': author_name, 'cate_id': cate_id, 'cate_name': cate_name, 'intro': intro, 'word_count': word_count, 'chapter_num': chapter_num, 'cover': cover })
+    if book_name:
+        book = Book.query.filter_by(book_name=book_name).first()
+        if book:
+            result.data = dict(book)
+            return result.to_dict()
+    data = { 'book_name': book_name, 'channel_name': channel_name, 'channel_url': channel_url, 'author_name': author_name, 'cate_id': cate_id, 'cate_name': cate_name, 'intro': intro, 'word_count': word_count, 'chapter_num': chapter_num, 'cover': cover }
+    book = Book(data)
     if book_id:
         book.book_id = int(book_id)
     try:
@@ -36,15 +42,17 @@ def addBook():
                 if book[key] is not None and key != 'book_id':
                     if hasattr(old_book, key):
                         setattr(old_book, key, book[key])
+            result.data = dict(old_book)
         else:
             db.session.add(book)
+            db.session.flush()
+            result.data = dict(book)
         db.session.commit()
+        return result.to_dict()
     except Exception as e:
         current_app.logger.error(e)
         result.code = RET.DBERR
         return result.to_dict()
-    result.data = dict(old_book)
-    return result.to_dict()
 
 
 @book_router.route('/list', methods=['GET'])
