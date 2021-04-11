@@ -7,7 +7,6 @@ from utils.function import chinese2digits
 import random
 
 
-
 class LiteratureCrawler():
     def __init__(self):
         self.start_url = 'https://www.biquge.info'
@@ -88,10 +87,19 @@ class LiteratureCrawler():
         html = requests.get(chapter_url, headers=self.headers)
         res = etree.HTML(html.content.decode())
         content = str(res.xpath('//div[@id="content"]/text()')[0])
+        next_url = res.xpath('//div[@class="bottem"]/a[contains(text(),"下一章")]/@href')[0]
+        print(next_url)
         if chapter_name is None:
             chapter_name = res.xpath('//div[@class="bookname"]/h1/text()')[0]
             p1 = re.compile(r'第(.*?)章', re.S)
-            chapter_id = re.findall(p1, chapter_name)[0]
+            chapter_id = re.findall(p1, chapter_name)
+            if len(chapter_id) <= 0:
+                if next_url.endswith('html'):
+                    self.crawling_book_chapter(next_url, book_id, None, None)
+                else:
+                    print("爬取小说结束，book_id={}".format(book_id))
+                return
+            chapter_id = chapter_id[0]
             chapter_id = chinese2digits(chapter_id)
         response = requests.post('http://127.0.0.1:5000/chapter/add/{}'.format(book_id), data={
             'chapter_id': chapter_id,
@@ -101,10 +109,8 @@ class LiteratureCrawler():
         response = response.json()
         if response.get('code') == 0:
             print("爬取成功,名称:{},第{}章".format(book_id, chapter_id))
-            time_stamp = random.randrange(5, 10, 1)
-            time.sleep(time_stamp)
-            next_url = res.xpath('//div[@class="bottem"]/a[contains(text(),"下一章")]/@href')[0]
-            print(next_url)
+            # time_stamp = random.randrange(5, 10, 1)
+            time.sleep(2)
             if next_url.endswith('html'):
                 self.crawling_book_chapter(next_url, book_id, None, None)
             else:
