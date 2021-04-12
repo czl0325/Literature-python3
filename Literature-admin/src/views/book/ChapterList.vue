@@ -54,7 +54,7 @@ export default defineComponent({
         return;
       }
       if (chapter) {
-        router.push( { path: '/book/chapter/add', query: { book_id: book_id, c_id:  chapter.id } } )
+        router.push( { path: '/book/chapter/add', query: { id: chapter.id } } )
       } else {
         router.push( { path: '/book/chapter/add', query: { book_id: book_id } } )
       }

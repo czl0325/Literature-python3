@@ -21,7 +21,7 @@
 import {defineComponent, ref} from 'vue'
 import {ChapterModel} from "@/models/models";
 import {useRoute} from "vue-router";
-import {addChapter} from "@/http/api";
+import {addChapter, getChapterDetail} from "@/http/api";
 import {ElMessage} from "element-plus";
 
 export default defineComponent({
@@ -29,13 +29,15 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const book_id = route.query.book_id
-    const c_id = route.query.c_id
+    const id = route.query.id
     const chapter = ref<ChapterModel>({})
     if (typeof book_id === 'string') {
       chapter.value.book_id = parseInt(book_id)
     }
-    if (typeof c_id === 'string' && c_id.length > 0) {
-      chapter.value.id = parseInt(c_id)
+    if (typeof id === 'string' && id.length > 0) {
+      getChapterDetail(parseInt(id)).then((res:ChapterModel|any)=>{
+        chapter.value = res
+      })
     }
     const onAddChapter = () => {
       if (typeof book_id === 'string' && book_id.length > 0) {
@@ -58,5 +60,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+:deep(.el-textarea__inner) {
+  height: 500px;
+}
 </style>

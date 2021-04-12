@@ -123,7 +123,7 @@ class BookChapters(BaseModel, db.Model):
     content = db.relationship("BookChapterContent", backref="chapter", uselist=False)
 
     def keys(self):
-        return 'book_id', 'chapter_id', 'chapter_name', 'word_count'
+        return 'id', 'book_id', 'chapter_id', 'chapter_name', 'word_count'
 
     def __getitem__(self, item):
         return getattr(self, item)

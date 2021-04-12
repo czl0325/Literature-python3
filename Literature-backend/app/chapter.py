@@ -74,5 +74,7 @@ def chapterDetail(id):
     if not chapter:
         result.code = RET.NODATA
         return result.to_dict()
-
+    data = dict(chapter)
+    data['content'] = chapter.content.content
+    result.data = data
     return result.to_dict()
