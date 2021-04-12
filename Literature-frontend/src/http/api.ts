@@ -8,3 +8,13 @@ export const registerUser = (userName: string, password: string, gender: number,
     location
   })
 }
+
+export const getCategoryList = () => {
+  return http1.get('/category/list')
+}
+
+export const getBookList = (cates: string='') => {
+  return http1.get('/book/list', {
+    cates
+  })
+}

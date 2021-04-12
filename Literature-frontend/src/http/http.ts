@@ -2,6 +2,7 @@ import {Toast} from "vant";
 import {MyAxios, BaseResponseData} from "@/http/myAxios";
 import qs from 'qs';
 import {AxiosInstance} from "axios";
+import {PageModel} from "@/models/models";
 
 export class HttpService {
   myAxios: AxiosInstance;
@@ -22,6 +23,42 @@ export class HttpService {
         reject(err.message);
       });
     });
+  }
+
+  async getWithPaging<T>(url: string, params: object = {}, refresh: boolean = true, state: {  refreshing: boolean, loading: boolean, finished: boolean }) {
+    if (refresh) {
+      state.refreshing = true
+    } else {
+      state.loading = true
+    }
+    let result = await this.myAxios.get(url, {params})
+    // @ts-ignore
+    if (result.code === 0) {
+      // @ts-ignore
+      const page = result.data as PageModel<T>;
+      const list = page.items
+      // @ts-ignore
+      if (list.length > 0) {
+        if (refresh) {
+          state.refreshing = false
+        } else {
+          state.loading = false
+        }
+        state.finished = (page.page_num === page.total_page);
+      } else {
+        state.refreshing = false
+        state.loading = false
+        state.finished = true
+      }
+      return Promise.resolve(list)
+    } else {
+      // @ts-ignore
+      Toast.fail(result.message)
+      state.refreshing = false
+      state.loading = false
+      state.finished = false
+      return Promise.reject(result)
+    }
   }
 
   post(url: string, params: object) {
