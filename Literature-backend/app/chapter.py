@@ -64,6 +64,31 @@ def chapterAdd(book_id):
     return result.to_dict()
 
 
+@chapter_router.route('/update/<int:id>', methods=['POST'])
+def chapterUpdate(id):
+    result = ResponseData(RET.OK)
+    content = request.form.get('content')
+    chapter_name = request.form.get('chapter_name')
+    chapter_id = request.form.get('chapter_id')
+    if not all([id, content, chapter_name, chapter_id]):
+        result.code = RET.NOPARAMS
+        return result.to_dict()
+    chapter = BookChapters.query.get(id)
+    if not chapter:
+        result.code = RET.NODATA
+        return result.to_dict()
+    try:
+        chapter.chapter_id = chapter_id
+        chapter.chapter_name = chapter_name
+        chapter.content.content = content
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        result.code = RET.DBERR
+        return result.to_dict()
+    return result.to_dict()
+
+
 @chapter_router.route('/<int:id>', methods=['GET'])
 def chapterDetail(id):
     result = ResponseData(RET.OK)

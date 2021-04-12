@@ -11,7 +11,7 @@
         <el-input v-model="chapter.content" type="textarea" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onAddChapter">{{ chapter.chapter_id ? '更新章节' : '立即添加' }}</el-button>
+        <el-button type="primary" @click="onAddChapter">{{ chapter.id ? '更新章节' : '立即添加' }}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -21,7 +21,7 @@
 import {defineComponent, ref} from 'vue'
 import {ChapterModel} from "@/models/models";
 import {useRoute} from "vue-router";
-import {addChapter, getChapterDetail} from "@/http/api";
+import {addChapter, getChapterDetail, updateChapter} from "@/http/api";
 import {ElMessage} from "element-plus";
 
 export default defineComponent({
@@ -40,15 +40,21 @@ export default defineComponent({
       })
     }
     const onAddChapter = () => {
-      if (typeof book_id === 'string' && book_id.length > 0) {
-        addChapter(chapter.value).then(() => {
-          ElMessage.success('添加章节成功!')
-          if (!chapter.value.chapter_id) {
-            chapter.value = {}
-          }
+      if (chapter.value.id) {
+        updateChapter(chapter.value).then(() => {
+          ElMessage.success('更新书籍成功!')
         })
       } else {
-        ElMessage.error('缺少书籍id')
+        if (typeof book_id === 'string' && book_id.length > 0) {
+          addChapter(chapter.value).then(() => {
+            ElMessage.success('添加章节成功!')
+            if (!chapter.value.chapter_id) {
+              chapter.value = {}
+            }
+          })
+        } else {
+          ElMessage.error('缺少书籍id')
+        }
       }
     }
     return {

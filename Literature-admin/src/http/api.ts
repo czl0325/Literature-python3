@@ -45,6 +45,13 @@ export const addChapter = (chapter: ChapterModel) => {
   })
 }
 
+export const updateChapter = (chapter: ChapterModel) => {
+  return http1.post(`/chapter/update/${chapter.id}`, {
+    ...chapter
+  })
+}
+
+
 export const getChapterDetail = (id: number) => {
   return http1.get(`/chapter/${id}`)
 }
