@@ -91,7 +91,14 @@ class LiteratureCrawler():
             html = html.content.decode()
             res = etree.HTML(html)
             # content = res.xpath('//div[@id="content"]')[0].xpath('string(.)')
-            content = re.findall(r'<!--go-->(.*?)<!--over-->', html)
+            content = re.findall(r'<div id="content"><!--go-->(.*?)<!--over-->\s+</div>', html, re.S)
+            if len(content) > 0:
+                content = content[0]
+                content = re.sub("<br/>+", "\n", content)
+                content = re.sub("\n+", "\n", content)
+                content = re.sub("&nbsp;", " ", content)
+            else:
+                content = ""
             next_url = res.xpath('//div[@class="bottem"]/a[contains(text(),"下一章")]/@href')[0]
             chapter_name = res.xpath('//div[@class="bookname"]/h1/text()')[0]
             p1 = re.compile(r'第(.*?)章', re.S)
