@@ -96,6 +96,7 @@ class LiteratureCrawler():
                 content = content[0]
                 content = re.sub("<br/>+", "\n", content)
                 content = re.sub("\n+", "\n", content)
+                content = re.sub("\r+", "", content)
                 content = re.sub("&nbsp;", " ", content)
             else:
                 content = ""

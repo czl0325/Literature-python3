@@ -51,12 +51,12 @@ def chapterAdd(book_id):
                 chapter.chapter_name = chapter_name
             chapter_detail = BookChapterContent.query.get(chapter.id)
             if not chapter_detail:
-                chapter.word_count = len(chapter_content)
+                chapter.word_count = len(chapter_content) - chapter_content.count(' ') - chapter_content.count('\n')
                 db.session.add(chapter_detail)
             else:
                 if len(chapter_detail.content) != len(chapter_content):
                     chapter_detail.content = chapter_content
-                    chapter.word_count = len(chapter_content)
+                    chapter.word_count = len(chapter_content) - chapter_content.count(' ') - chapter_content.count('\n')
         else:
             chapter = BookChapters(book_id=book_id, chapter_id=chapter_id, chapter_name=chapter_name, word_count=len(chapter_content))
             db.session.add(chapter)
