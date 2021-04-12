@@ -1,3 +1,10 @@
+export interface PageModel<T> {
+  total_page?: number,
+  total_num?: number;
+  items?: T[];
+  page_num?: number;
+}
+
 export interface CategoryModel {
   cate_id?: number,
   cate_name: string,

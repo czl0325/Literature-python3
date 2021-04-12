@@ -26,7 +26,9 @@
           <el-tabs v-model="active_path" type="card" closable @tab-click="tabClick" @tab-remove="tabRemove">
             <el-tab-pane v-for="tab in tabs" :name="tab.path" :key="tab.path" :label="tab.title"></el-tab-pane>
           </el-tabs>
-          <router-view />
+          <div style="padding: 10px 10px 100px 10px; box-sizing: border-box;">
+            <router-view />
+          </div>
         </div>
       </div>
     </el-col>

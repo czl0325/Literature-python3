@@ -26,6 +26,20 @@ error_map = {
 }
 
 
+class PageModel(object):
+    def __init__(self, total_page, total_num, items, page_num):
+        self.total_page = total_page
+        self.total_num = total_num
+        self.items = items
+        self.page_num = page_num
+
+    def keys(self):
+        return 'total_page', 'total_num', 'items', 'page_num'
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+
 class ResponseData(object):
     def __init__(self, code, data=None):
         self.code = code

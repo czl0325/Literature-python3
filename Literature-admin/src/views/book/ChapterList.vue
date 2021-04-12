@@ -19,7 +19,7 @@
 import {defineComponent, ref} from 'vue'
 import {useRoute, useRouter} from "vue-router";
 import {getChapterList} from "@/http/api";
-import {ChapterModel} from "@/models/models";
+import {ChapterModel, PageModel} from "@/models/models";
 import {ElMessage} from "element-plus";
 
 export default defineComponent({
@@ -30,8 +30,8 @@ export default defineComponent({
     const chapter_list = ref<ChapterModel[]>([])
     const book_id = route.query.id
     if (typeof book_id === 'string') {
-      getChapterList(parseInt(book_id)).then((res:ChapterModel|any) => {
-        chapter_list.value = res
+      getChapterList(parseInt(book_id)).then((res:PageModel<ChapterModel>|any) => {
+        chapter_list.value = res.items
       })
     }
     const toChapter = (chapter: ChapterModel) => {

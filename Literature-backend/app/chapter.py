@@ -1,6 +1,6 @@
 from flask import Blueprint, current_app, request
 from models import db, Book, BookChapters, BookChapterContent
-from utils.response_code import ResponseData, RET
+from utils.response_code import ResponseData, RET, PageModel
 
 chapter_router = Blueprint('chapter', __name__, url_prefix='/chapter')
 
@@ -8,14 +8,26 @@ chapter_router = Blueprint('chapter', __name__, url_prefix='/chapter')
 @chapter_router.route('/list/<int:book_id>', methods=['GET'])
 def chapterList(book_id):
     result = ResponseData(RET.OK)
+    page_num = request.args.get('pageNum', type=int)
+    if not page_num:
+        result.code = RET.NOPARAMS
+        return result.to_dict()
+    page_size = request.args.get('pageSize', type=int, default=30)
     book = Book.query.get(book_id)
     if not book:
         result.code = RET.NODATA
         return result.to_dict()
-    chapters = BookChapters.query.filter(BookChapters.book_id == book_id).order_by(BookChapters.chapter_id.asc()).all()
-    chapters = [dict(chapter) for chapter in chapters]
-    result.data = chapters
-    return result.to_dict()
+    try:
+        chapter_query = BookChapters.query.filter(BookChapters.book_id == book_id).order_by(BookChapters.chapter_id.asc())
+        chapters_paginate = chapter_query.paginate(page=page_num, per_page=page_size, error_out=False)
+        chapters = [dict(chapter) for chapter in chapters_paginate.items]
+        page_model = PageModel(page_num=page_num, items=chapters, total_page=chapters_paginate.pages, total_num=chapters_paginate.total)
+        result.data = dict(page_model)
+        return result.to_dict()
+    except Exception as e:
+        current_app.logger.error(e)
+        result.code = RET.DBERR
+        return result.to_dict()
 
 
 @chapter_router.route('/add/<int:book_id>', methods=['POST'])
