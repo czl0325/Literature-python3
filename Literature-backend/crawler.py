@@ -88,8 +88,10 @@ class LiteratureCrawler():
         while next_url.endswith('html'):
             print(next_url)
             html = requests.get(next_url, headers=self.headers)
-            res = etree.HTML(html.content.decode())
-            content = str(res.xpath('//div[@id="content"]/text()')[0])
+            html = html.content.decode()
+            res = etree.HTML(html)
+            # content = res.xpath('//div[@id="content"]')[0].xpath('string(.)')
+            content = re.findall(r'<!--go-->(.*?)<!--over-->', html)
             next_url = res.xpath('//div[@class="bottem"]/a[contains(text(),"下一章")]/@href')[0]
             chapter_name = res.xpath('//div[@class="bookname"]/h1/text()')[0]
             p1 = re.compile(r'第(.*?)章', re.S)
