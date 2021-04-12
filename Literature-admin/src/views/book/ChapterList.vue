@@ -1,9 +1,16 @@
 <template>
   <div>
-    <div style="text-align: right;padding: 5px 0;box-sizing: border-box;">
+    <div style="text-align: right;padding: 5px 0;box-sizing: border-box;display: flex;
+justify-content: space-between;align-items: center;" >
       <el-button type="primary" @click="toChapter">添加章节</el-button>
+      <div style="height: 40px;line-height: 40px;margin-bottom: 5px;">
+        <span>跳转到第</span>
+        <el-input v-model="pageNum" type="number" style="display: inline-block;width: 100px;height: 40px;margin: 0 5px;" />
+        <span>页</span>
+        <el-button type="primary" style="margin-left: 10px;" @click="requestChapterList">跳转</el-button>
+      </div>
     </div>
-    <el-table :data="chapter_list" border style="width: 100%">
+    <el-table :data="chapter_page.items" border style="width: 100%">
       <el-table-column prop="chapter_id" label="章节" width="150"/>
       <el-table-column prop="chapter_name" label="标题" />
       <el-table-column fixed="right" label="操作" width="100">
@@ -12,6 +19,9 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="pagination">
+      <el-pagination background layout="prev, pager, next" :total="chapter_page.total_num" :page-size="20" :current-page="parseInt(pageNum)" @current-change="onPageChange" />
+    </div>
   </div>
 </template>
 
@@ -27,13 +37,17 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const chapter_list = ref<ChapterModel[]>([])
+    const chapter_page = ref<PageModel<ChapterModel>>({})
     const book_id = route.query.id
-    if (typeof book_id === 'string') {
-      getChapterList(parseInt(book_id)).then((res:PageModel<ChapterModel>|any) => {
-        chapter_list.value = res.items
-      })
+    const pageNum = ref(1)
+    const requestChapterList = () => {
+      if (typeof book_id === 'string') {
+        getChapterList(parseInt(book_id), pageNum.value).then((res:PageModel<ChapterModel>|any) => {
+          chapter_page.value = res
+        })
+      }
     }
+    requestChapterList()
     const toChapter = (chapter: ChapterModel) => {
       if (!book_id) {
         ElMessage.error('书籍信息错误')
@@ -45,14 +59,26 @@ export default defineComponent({
         router.push( { path: '/book/chapter/add', query: { book_id: book_id } } )
       }
     }
+    const onPageChange = (page: number) => {
+      pageNum.value = page
+      requestChapterList()
+    }
     return {
-      chapter_list,
-      toChapter
+      pageNum,
+      chapter_page,
+      toChapter,
+      onPageChange,
+      requestChapterList
     }
   }
 })
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+.pagination {
+  width: 100%;
+  padding: 20px 0;
+  box-sizing: border-box;
+  text-align: right;
+}
 </style>

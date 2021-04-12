@@ -41,10 +41,7 @@ export class MyAxios {
     // 请求接口拦截器
     this.instance.interceptors.request.use(
       config => {
-        this.loading = ElLoading.service({
-          lock: true,
-          text: '请求中...'
-        })
+        this.loading = ElLoading.service({})
         return config
       },
       err => {

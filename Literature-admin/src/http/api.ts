@@ -32,10 +32,10 @@ export const getBookDetail = (book_id: number) => {
   return http1.get(`/book/detail/${book_id}`)
 }
 
-export const getChapterList = (book_id: number) => {
+export const getChapterList = (book_id: number, pageNum: number) => {
   return http1.get(`/chapter/list/${book_id}`, {
-    pageNum: 1,
-    pageSize: 10
+    pageNum: pageNum,
+    pageSize: 20
   })
 }
 
