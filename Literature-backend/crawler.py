@@ -73,28 +73,29 @@ class LiteratureCrawler():
         if response.get('code') == 0:
             data = response.get('data')
             book_db = Book({'book_id': data.get('book_id')})
+            print("开始爬取小说---{}".format(book_name))
             response = requests.get('http://127.0.0.1:5000/chapter/last', params={
                 'book_id': book_db.book_id
             })
             response = response.json()
+            last = 0
             if response.get('code') == 0:
                 data = response.get('data')
                 if data and data.get('chapter_id'):
                     last = int(data.get('chapter_id'))
+                    print("获取最后章节={}".format(last))
                     if last >= len(chapters):
                         return
-                    for i, chapter in enumerate(chapters):
-                        if i+1 <= last:
-                            continue
-                        chapter_url = book_url + chapter.xpath('./@href')[0]
-                        self.crawling_book_chapter(chapter_url, book_db.book_id, last)
                 # if len(chapters) > 0:
                 #     chapter = chapters[0]
                 #     chapter_url = book_url + chapter.xpath('./@href')[0]
                 #     self.crawling_book_chapter(chapter_url, book_db.book_id)
-                print("爬取小说结束，小说名={}".format(book_name))
-            else:
-                print('获取最后章节失败，书籍名={}'.format(book_name))
+            for i, chapter in enumerate(chapters):
+                if i + 1 <= last:
+                    continue
+                chapter_url = book_url + chapter.xpath('./@href')[0]
+                self.crawling_book_chapter(chapter_url, book_db.book_id, last)
+            print("爬取小说结束，小说名={}".format(book_name))
         else:
             print("请求失败:", response)
 
@@ -133,7 +134,7 @@ class LiteratureCrawler():
         if response.get('code') == 0:
             print("爬取成功,名称:{},第{}章".format(book_id, chapter_id))
             # time_stamp = random.randrange(5, 10, 1)
-            time.sleep(2)
+            # time.sleep(0.5)
         else:
             print("爬取失败,名称:{},第{}章".format(book_id, chapter_id))
 

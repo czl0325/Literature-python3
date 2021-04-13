@@ -119,7 +119,7 @@ def getLastChapter():
         result.code = RET.NOPARAMS
         return result.to_dict()
     try:
-        lastChapter = BookChapters.query.order_by(BookChapters.chapter_id.desc()).limit(1).first()
+        lastChapter = BookChapters.query.filter(BookChapters.book_id==book_id).order_by(BookChapters.chapter_id.desc()).limit(1).first()
         result.data = dict(lastChapter)
         return result.to_dict()
     except Exception as e:

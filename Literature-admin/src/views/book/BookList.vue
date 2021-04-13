@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
-import {BookModel} from "@/models/models";
+import {BookModel, PageModel} from "@/models/models";
 import {getBookList} from "@/http/api";
 import {useRouter} from "vue-router";
 
@@ -38,8 +38,8 @@ export default defineComponent({
     const handleDelete = (index: number, book: BookModel) => {
 
     }
-    getBookList().then((res: BookModel[] | any) =>{
-      book_list.value = res
+    getBookList().then((res: PageModel<BookModel> | any) =>{
+      book_list.value = res.items
     })
     return {
       book_list,
