@@ -4,16 +4,18 @@ module.exports = {
     //设置"script"（默认）或"module"如果你的代码是在ECMAScript中的模块。
     sourceType: 'module',
     parser: 'babel-eslint',
+    ecmaVersion: 2020
   },
   env: {
     browser: true,
     node: true,
-    es6: true,
-    jquery: true
+    es6: true
   },
   extends: [
-    "eslint:recommended",
-    "plugin:vue/recommended"
+    // 'eslint:recommended',
+    'plugin:vue/recommended',
+    'plugin:vue/vue3-essential',
+    '@vue/typescript/recommended'
   ],
   plugins: ["vue"],
   'rules': {
@@ -26,9 +28,16 @@ module.exports = {
     'arrow-parens': 0,
     'generator-star-spacing': 0,
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    '@typescript-eslint/no-var-requires': 0,
     'no-undef': 0,
     'no-console': 'off',
     'space-before-function-paren': ["off", "never"],
+    "strict": 'off',
+    "no-implicit-coercion": 'off',
+    "no-mixed-requires": [0, false],
+    "no-multi-spaces": 0,
+    "no-tabs": "off",
+    'no-mixed-spaces-and-tabs': 0,
     "no-unused-vars": [
       2,
       {
@@ -53,8 +62,6 @@ module.exports = {
       },
       // 空行最多不能超过100行
       "no-multiple-empty-lines": [0, {"max": 100}],
-      // 关闭禁止混用tab和空格
-      "no-mixed-spaces-and-tabs": [0],
       // 数组第一个指定是否启用这个规则，第二个指定几个空格
       "indent":[1,2]
     }]

@@ -40,7 +40,7 @@ import NavigationBar from "@/components/NavigationBar.vue";
 import {areaList} from '@/tools/areas'
 import {registerUser} from "@/http/api";
 import {useRouter} from "vue-router";
-import {FileModel} from "@/http/myAxios.ts";
+import {FileModel} from "@/http/myAxios";
 
 export default defineComponent ({
   name: "Register",
