@@ -109,3 +109,20 @@ def chapterDetail(id):
     data['content'] = chapter.content.content
     result.data = data
     return result.to_dict()
+
+
+@chapter_router.route('/last', methods=['GET'])
+def getLastChapter():
+    result = ResponseData(RET.OK)
+    book_id = request.args.get('book_id')
+    if not book_id:
+        result.code = RET.NOPARAMS
+        return result.to_dict()
+    try:
+        lastChapter = BookChapters.query.order_by(BookChapters.chapter_id.desc()).limit(1).first()
+        result.data = dict(lastChapter)
+        return result.to_dict()
+    except Exception as e:
+        current_app.logger.error(e)
+        result.code = RET.NODATA
+        return result.to_dict()

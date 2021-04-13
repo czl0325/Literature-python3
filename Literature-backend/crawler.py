@@ -73,52 +73,69 @@ class LiteratureCrawler():
         if response.get('code') == 0:
             data = response.get('data')
             book_db = Book({'book_id': data.get('book_id')})
-            if len(chapters) > 0:
-                chapter = chapters[0]
-                chapter_url = book_url + chapter.xpath('./@href')[0]
-                self.crawling_book_chapter(chapter_url, book_db.book_id)
-        else:
-            print("请求失败:", response)
-
-    def crawling_book_chapter(self, chapter_url, book_id):
-        next_url = chapter_url
-        while next_url.endswith('html'):
-            print(next_url)
-            html = requests.get(next_url, headers=self.headers)
-            html = html.content.decode()
-            res = etree.HTML(html)
-            # content = res.xpath('//div[@id="content"]')[0].xpath('string(.)')
-            content = re.findall(r'<div id="content"><!--go-->(.*?)<!--over-->\s+</div>', html, re.S)
-            if len(content) > 0:
-                content = content[0]
-                content = re.sub("<br/>+", "\n", content)
-                content = re.sub("\n+", "\n", content)
-                content = re.sub("\r+", "", content)
-                content = re.sub("&nbsp;", " ", content)
-            else:
-                content = ""
-            next_url = res.xpath('//div[@class="bottem"]/a[contains(text(),"下一章")]/@href')[0]
-            chapter_name = res.xpath('//div[@class="bookname"]/h1/text()')[0]
-            p1 = re.compile(r'第(.*?)章', re.S)
-            chapter_id = re.findall(p1, chapter_name)
-            if len(chapter_id) <= 0:
-                continue
-            chapter_id = chapter_id[0]
-            chapter_id = chinese2digits(chapter_id)
-            response = requests.post('http://127.0.0.1:5000/chapter/add/{}'.format(book_id), data={
-                'chapter_id': chapter_id,
-                'chapter_name': chapter_name,
-                'chapter_content': content
+            response = requests.get('http://127.0.0.1:5000/chapter/last', params={
+                'book_id': book_db.book_id
             })
             response = response.json()
             if response.get('code') == 0:
-                print("爬取成功,名称:{},第{}章".format(book_id, chapter_id))
-                # time_stamp = random.randrange(5, 10, 1)
-                time.sleep(2)
-                if not next_url.endswith('html'):
-                    print("爬取小说结束，book_id={}".format(book_id))
+                data = response.get('data')
+                if data and data.get('chapter_id'):
+                    last = int(data.get('chapter_id'))
+                    if last >= len(chapters):
+                        return
+                    for i, chapter in enumerate(chapters):
+                        if i+1 <= last:
+                            continue
+                        chapter_url = book_url + chapter.xpath('./@href')[0]
+                        self.crawling_book_chapter(chapter_url, book_db.book_id, last)
+                # if len(chapters) > 0:
+                #     chapter = chapters[0]
+                #     chapter_url = book_url + chapter.xpath('./@href')[0]
+                #     self.crawling_book_chapter(chapter_url, book_db.book_id)
+                print("爬取小说结束，小说名={}".format(book_name))
             else:
-                print("爬取失败,名称:{},第{}章".format(book_id, chapter_id))
+                print('获取最后章节失败，书籍名={}'.format(book_name))
+        else:
+            print("请求失败:", response)
+
+    def crawling_book_chapter(self, chapter_url, book_id, last):
+        # next_url = chapter_url
+        # while next_url.endswith('html'):
+        #     print(next_url)
+        html = requests.get(chapter_url, headers=self.headers)
+        html = html.content.decode()
+        res = etree.HTML(html)
+        chapter_name = res.xpath('//div[@class="bookname"]/h1/text()')[0]
+        p1 = re.compile(r'第(.*?)章', re.S)
+        chapter_id = re.findall(p1, chapter_name)
+        if len(chapter_id) <= 0:
+            return
+        chapter_id = chapter_id[0]
+        chapter_id = chinese2digits(chapter_id)
+        if chapter_id <= last:
+            return
+        # content = res.xpath('//div[@id="content"]')[0].xpath('string(.)')
+        content = re.findall(r'<div id="content"><!--go-->(.*?)<!--over-->\s+</div>', html, re.S)
+        if len(content) > 0:
+            content = content[0]
+            content = re.sub("<br/>+", "\n", content)
+            content = re.sub("\n+", "\n", content)
+            content = re.sub("\r+", "", content)
+            content = re.sub("&nbsp;", " ", content)
+        else:
+            content = ""
+        response = requests.post('http://127.0.0.1:5000/chapter/add/{}'.format(book_id), data={
+            'chapter_id': chapter_id,
+            'chapter_name': chapter_name,
+            'chapter_content': content
+        })
+        response = response.json()
+        if response.get('code') == 0:
+            print("爬取成功,名称:{},第{}章".format(book_id, chapter_id))
+            # time_stamp = random.randrange(5, 10, 1)
+            time.sleep(2)
+        else:
+            print("爬取失败,名称:{},第{}章".format(book_id, chapter_id))
 
 
 if __name__ == '__main__':
