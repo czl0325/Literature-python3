@@ -73,11 +73,8 @@ class LiteratureCrawler():
         if response.get('code') == 0:
             data = response.get('data')
             book_db = Book({'book_id': data.get('book_id')})
-            for chapter in chapters:
-                chapter_name = chapter.xpath('./text()')[0]
-                p1 = re.compile(r'第(.*?)章', re.S)
-                chapter_id = re.findall(p1, chapter_name)[0]
-                chapter_id = chinese2digits(chapter_id)
+            if len(chapters) > 0:
+                chapter = chapters[0]
                 chapter_url = book_url + chapter.xpath('./@href')[0]
                 self.crawling_book_chapter(chapter_url, book_db.book_id)
         else:
