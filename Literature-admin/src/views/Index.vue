@@ -1,7 +1,7 @@
 <template>
   <el-row class="nav">
     <el-col :span="6">
-      <div class="logo">LOGO</div>
+      <div class="logo">小说网后台管理系统</div>
     </el-col>
     <el-col :span="18" style="text-align: right">
 
