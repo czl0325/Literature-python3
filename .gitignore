@@ -131,4 +131,4 @@ dmypy.json
 migrations/
 node_modules/
 venv/
-logs/*.log
+logs/

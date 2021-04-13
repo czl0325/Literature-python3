@@ -24,5 +24,5 @@ def chinese2digits(uchars_chinese):
                 total = total + r * val
         return total
     except Exception as e:
-        print(e)
-        return 0
+        print('截取错误,名称={},错误={}'.format(uchars_chinese, e))
+        return -1

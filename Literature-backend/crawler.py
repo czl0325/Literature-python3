@@ -17,7 +17,7 @@ class LiteratureCrawler():
         print("开始爬取数据")
         html = requests.get(self.start_url, headers=self.headers)
         res = etree.HTML(html.content.decode())
-        categories = res.xpath('//div[@class="nav"]/ul/li[position()>2 and position()<9]')
+        categories = res.xpath('//div[@class="nav"]/ul/li[position()>3 and position()<9]')
         for category in categories:
             category_name = category.xpath('./a/text()')[0]
             books_url = category.xpath('./a/@href')[0]
@@ -113,7 +113,7 @@ class LiteratureCrawler():
             return
         chapter_id = chapter_id[0]
         chapter_id = chinese2digits(chapter_id)
-        if chapter_id <= last:
+        if chapter_id <= last and chapter_id != -1:
             return
         # content = res.xpath('//div[@id="content"]')[0].xpath('string(.)')
         content = re.findall(r'<div id="content"><!--go-->(.*?)<!--over-->\s+</div>', html, re.S)
@@ -134,7 +134,7 @@ class LiteratureCrawler():
         if response.get('code') == 0:
             print("爬取成功,名称:{},第{}章".format(book_id, chapter_id))
             # time_stamp = random.randrange(5, 10, 1)
-            # time.sleep(0.5)
+            time.sleep(2)
         else:
             print("爬取失败,名称:{},第{}章".format(book_id, chapter_id))
 
