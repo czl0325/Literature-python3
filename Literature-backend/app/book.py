@@ -1,7 +1,7 @@
 from flask_restful import Api, Resource, reqparse
 from models import db, Book, BookChapters
 from flask import Blueprint, current_app, request
-from utils.response_code import ResponseData, RET
+from utils.response_code import ResponseData, RET, PageModel
 
 book_router = Blueprint('book', __name__, url_prefix='/book')
 
@@ -59,11 +59,15 @@ def addBook():
 def bookList():
     result = ResponseData(RET.OK)
     cates = request.args.get('cates', type=str, default='')
-    books = Book.query.order_by(Book.create_time)
+    page_num = request.args.get('pageNum', type=int, default=1)
+    page_size = request.args.get('pageSize', type=int, default=20)
+    books_query = Book.query.order_by(Book.create_time)
     if cates:
-        books = books.filter(Book.cate_id.in_(cates.split(",")))
-    books = [dict(book) for book in books]
-    result.data = books
+        books_query.filter(Book.cate_id.in_(cates.split(",")))
+    books_paginate = books_query.paginate(page=page_num, per_page=page_size, error_out=False)
+    books = [dict(book) for book in books_paginate.items]
+    page_model = PageModel(page_num=page_num, items=books, total_page=books_paginate.pages, total_num=books_paginate.total)
+    result.data = dict(page_model)
     return result.to_dict()
 
 

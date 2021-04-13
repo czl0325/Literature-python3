@@ -3,7 +3,7 @@ module.exports = {
   //lintOnSave: false,
   devServer: {
     open: true,
-    host: '172.50.93.90',
+    host: 'localhost',
     port: 8080,
     proxy: {
       '/api': {
