@@ -109,6 +109,8 @@ class LiteratureCrawler():
         html = html.content.decode()
         res = etree.HTML(html)
         chapter_name = res.xpath('//div[@class="bookname"]/h1/text()')[0]
+        if not chapter_name.startswith('第'):
+            return
         p1 = re.compile(r'第(.*?)章', re.S)
         chapter_id = re.findall(p1, chapter_name)
         if len(chapter_id) <= 0:
