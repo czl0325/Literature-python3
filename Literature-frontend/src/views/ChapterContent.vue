@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+import {defineComponent, ref, watch} from 'vue'
 import NavigationBar from "@/components/NavigationBar.vue";
 import {ChapterModel} from "@/models/models";
 import {getChapterDetail1, getChapterDetail2} from '@/http/api'
@@ -41,12 +41,19 @@ export default defineComponent({
     const toChapter = (next: boolean) => {
       const chapter_num = chapter.value.chapter_id
       if (chapter_num) {
-        getChapterDetail2(next?chapter_num+1:chapter_num-1, chapter.value.book_id as number).then((res:ChapterModel|any)=>{
-          chapter.value = res;
-          window.scrollTo(0, 0)
-        })
+        router.push({path: '/content', query: {chapter_id: next?chapter_num+1:chapter_num-1, book_id: chapter.value.book_id}, replace: true})
+        // getChapterDetail2(next?chapter_num+1:chapter_num-1, chapter.value.book_id as number).then((res:ChapterModel|any)=>{
+        //   chapter.value = res;
+        //   window.scrollTo(0, 0)
+        // })
       }
     }
+    watch(()=>[route.query.chapter_id, route.query.book_id], (val) => {
+      getChapterDetail2(parseInt(route.query.chapter_id as string), parseInt(route.query.book_id as string)).then((res:ChapterModel|any)=>{
+        chapter.value = res;
+        window.scrollTo(0, 0)
+      })
+    })
     return {
       chapter,
       toChapter
