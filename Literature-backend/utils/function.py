@@ -3,7 +3,7 @@ common_used_numerals_tmp = {'零': 0, '一': 1, '二': 2, '两': 2, '三': 3, '�
 
 def chinese2digits(number_chinese):
     if is_number(number_chinese):
-        return int(number_chinese)
+        return float(number_chinese)
     number_chinese = number_chinese.strip()
     total = 0
     r = 1  # 表示单位：个十百千...
@@ -39,12 +39,12 @@ def is_number(s):
     except ValueError:
         pass
 
-    import unicodedata
-    try:
-        unicodedata.numeric(s)
-        return True
-    except (TypeError, ValueError):
-        pass
+    # import unicodedata
+    # try:
+    #     unicodedata.numeric(s)
+    #     return True
+    # except (TypeError, ValueError):
+    #     pass
     return False
 
 
@@ -55,7 +55,7 @@ def is_number(s):
 #
 #
 #
-# if __name__ == '__main__':
-#     str = (getChapterId('七十五-七十六'))
-#     print(str)
-#     print(chinese2digits(str))
+if __name__ == '__main__':
+    str = '二'
+    print(str)
+    print(chinese2digits(str))

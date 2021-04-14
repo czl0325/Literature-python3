@@ -39,7 +39,6 @@ def chapterAdd(book_id):
         return result.to_dict()
     chapter_id = request.form.get('chapter_id')
     chapter_content = request.form.get('chapter_content')
-    print(chapter_content)
     chapter_name = request.form.get('chapter_name')
     if not chapter_id:
         result.code = RET.NODATA
@@ -54,7 +53,7 @@ def chapterAdd(book_id):
                 chapter.word_count = len(chapter_content) - chapter_content.count(' ') - chapter_content.count('\n')
                 db.session.add(chapter_detail)
             else:
-                if len(chapter_detail.content) != len(chapter_content):
+                if len(chapter_detail.content) < len(chapter_content):
                     chapter_detail.content = chapter_content
                     chapter.word_count = len(chapter_content) - chapter_content.count(' ') - chapter_content.count('\n')
         else:
