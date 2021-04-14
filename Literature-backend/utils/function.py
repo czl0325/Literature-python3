@@ -45,28 +45,6 @@ def is_number(s):
         return True
     except (TypeError, ValueError):
         pass
-
-    if len(s) < 2:
-        return False
-
-    try:
-        d = 0
-        if s.startswith('－'):
-            s = s[1:]
-        for c in s:
-            if c == '－':  # 全角减号
-                return False
-
-            if c == '．':  # 全角点号
-                if d > 0:
-                    return False
-                else:
-                    d = 1
-                    continue
-            unicodedata.numeric(c)
-        return True
-    except (TypeError, ValueError):
-        pass
     return False
 
 
