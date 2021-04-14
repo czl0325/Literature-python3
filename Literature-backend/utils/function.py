@@ -67,5 +67,8 @@ def is_number(s):
         return True
     except (TypeError, ValueError):
         pass
-
     return False
+
+
+# if __name__ == '__main__':
+#     print(chinese2digits('七十五-七十六'))

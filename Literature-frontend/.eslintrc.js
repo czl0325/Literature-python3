@@ -1,11 +1,9 @@
 module.exports = {
   root: true,
   parserOptions: {
-    //设置"script"（默认）或"module"如果你的代码是在ECMAScript中的模块。
-    sourceType: 'module',
-    parser: 'babel-eslint',
-    ecmaVersion: 2020
+    sourceType: 'module'
   },
+  parser: 'babel-eslint',
   env: {
     browser: true,
     node: true,
@@ -13,11 +11,11 @@ module.exports = {
   },
   extends: [
     // 'eslint:recommended',
-    'plugin:vue/recommended',
-    'plugin:vue/vue3-essential',
-    '@vue/typescript/recommended'
+    // 'plugin:vue/recommended',
+    // 'plugin:vue/vue3-essential',
+    // '@vue/typescript/recommended'
   ],
-  plugins: ["vue"],
+  // plugins: ["vue"],
   'rules': {
     'vue/no-multiple-template-root': 'off',
     'vue/singleline-html-element-content-newline': 'off',

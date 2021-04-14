@@ -1,7 +1,6 @@
 module.exports = {
-  lintOnSave: false,
+  // lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
-  //lintOnSave: false,
   devServer: {
     open: true,
     host: 'localhost',

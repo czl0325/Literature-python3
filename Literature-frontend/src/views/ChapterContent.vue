@@ -50,7 +50,7 @@ export default defineComponent({
     }
     watch(()=>[route.query.chapter_id, route.query.book_id], (val) => {
       getChapterDetail2(parseInt(route.query.chapter_id as string), parseInt(route.query.book_id as string)).then((res:ChapterModel|any)=>{
-        chapter.value = res;
+        chapter.value = res
         window.scrollTo(0, 0)
       })
     })

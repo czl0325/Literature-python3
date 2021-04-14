@@ -21,6 +21,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter()
     const toChapterContent = () => {
+      console.log(props.chapter.id)
       const id = props.chapter.id
       if (id) {
         router.push({path: `/content`, query: {id: id}})
