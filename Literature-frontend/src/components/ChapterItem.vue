@@ -7,6 +7,8 @@
 <script lang="ts">
 import {defineComponent, PropType, ref} from 'vue'
 import {ChapterModel} from "@/models/models";
+import {useRouter} from "vue-router";
+import {Toast} from "vant";
 
 export default defineComponent({
   name: "ChapterItem",
@@ -16,9 +18,15 @@ export default defineComponent({
       default: {}
     }
   },
-  setup() {
+  setup(props) {
+    const router = useRouter()
     const toChapterContent = () => {
-
+      const id = props.chapter.id
+      if (id) {
+        router.push({path: `/content`, query: {id: id}})
+      } else {
+        Toast.fail('缺少章节id')
+      }
     }
     return {
       toChapterContent

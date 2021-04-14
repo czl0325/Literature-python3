@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "better-scroll": "^2.2.1",
     "core-js": "^3.6.5",
     "vant": "^3.0.11",
     "vue": "^3.0.0",

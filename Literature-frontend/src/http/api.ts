@@ -30,3 +30,16 @@ export const getChapterList = (book_id: number, pageNum: number=1, refresh: bool
     pageNum
   }, refresh, state)
 }
+
+export const getChapterDetail1 = (id: number) => {
+  return http1.get(`/chapter/content`, {
+    id
+  })
+}
+
+export const getChapterDetail2 = (chapter_id: number, book_id: number) => {
+  return http1.get(`/chapter/content`, {
+    chapter_id,
+    book_id
+  })
+}

@@ -95,13 +95,20 @@ def chapterUpdate(id):
     return result.to_dict()
 
 
-@chapter_router.route('/<int:id>', methods=['GET'])
-def chapterDetail(id):
+@chapter_router.route('/content', methods=['GET'])
+def chapterDetail():
     result = ResponseData(RET.OK)
-    if not id:
+    id = request.args.get('id')
+    chapter_id = request.args.get('chapter_id')
+    book_id = request.args.get('book_id')
+    if not id and (not all([chapter_id, book_id])):
         result.code = RET.NOPARAMS
         return result.to_dict()
-    chapter = BookChapters.query.get(id)
+    chapter = None
+    if id:
+        chapter = BookChapters.query.get(id)
+    elif chapter_id and book_id:
+        chapter = BookChapters.query.filter_by(book_id=book_id, chapter_id=chapter_id).first()
     if not chapter:
         result.code = RET.NODATA
         return result.to_dict()

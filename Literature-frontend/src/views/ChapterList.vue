@@ -54,7 +54,6 @@ export default defineComponent({
       getBookDetail(parseInt(book_id)).then((res:BookModel|any) => {
         book.value = res
       })
-
       requestChapterList(true)
     }
     return {
