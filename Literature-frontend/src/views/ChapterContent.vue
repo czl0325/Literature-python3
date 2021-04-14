@@ -41,7 +41,7 @@ export default defineComponent({
     const toChapter = (next: boolean) => {
       const chapter_num = chapter.value.chapter_id
       if (chapter_num) {
-        getChapterDetail2(next?chapter_num+1:chapter_num-1, parseInt(book_id as string)).then((res:ChapterModel|any)=>{
+        getChapterDetail2(next?chapter_num+1:chapter_num-1, chapter.value.book_id as number).then((res:ChapterModel|any)=>{
           chapter.value = res;
           window.scrollTo(0, 0)
         })
