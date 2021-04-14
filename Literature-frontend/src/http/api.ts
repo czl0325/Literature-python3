@@ -10,6 +10,20 @@ export const registerUser = (userName: string, password: string, gender: number,
   })
 }
 
+export const loginUser = (userName: string, password: string) => {
+  return http1.post('/user/login', {
+    userName,
+    password
+  })
+}
+
+export const addMyBook = (book_id: number, user_id: number) => {
+  return http1.post('/user/addMyBook', {
+    user_id,
+    book_id
+  })
+}
+
 export const getCategoryList = () => {
   return http1.get('/category/list')
 }

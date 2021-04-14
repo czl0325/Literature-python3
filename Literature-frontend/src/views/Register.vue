@@ -40,6 +40,8 @@ import {areaList} from '@/tools/areas'
 import {registerUser} from "@/http/api";
 import {useRouter} from "vue-router";
 import {FileModel} from "@/http/myAxios";
+import {useStore} from "vuex";
+import {UserInfo} from "@/store/state";
 
 export default defineComponent ({
   name: "Register",
@@ -66,13 +68,17 @@ export default defineComponent ({
           .join('/');
     }
     const router = useRouter()
+    const store = useStore()
     const onResister = () => {
       if (!user.location) {
         user.location = '北京市/北京市/东城区'
       }
       let file = files.value[0]
-      registerUser(user.userName, user.password, user.gender, user.location, file.file).then(()=> {
-        router.push('home')
+      registerUser(user.userName, user.password, user.gender, user.location, file.file).then((res:UserInfo|any)=> {
+        if (res) {
+          store.commit('updateUserInfo', res)
+          router.push('home')
+        }
       })
     }
     return {

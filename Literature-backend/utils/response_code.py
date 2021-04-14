@@ -8,6 +8,7 @@ class RET:
     DATAEXIST = "4003"
     NOPARAMS = "4004"
     PARAMERROR = "4005"
+    DUPLICATEDATA = "4006"
     TOKENERROR = "4100"
     THIRDPARTYERROR = "4200"
     UNKOWNERR = "4501"
@@ -15,10 +16,11 @@ class RET:
 
 error_map = {
     RET.OK: u"请求成功",
-    RET.DBERR: u"数据库查询错误",
+    RET.DBERR: u"数据库操作错误",
     RET.NODATA: u"无数据",
     RET.DATAEXIST: u"数据已存在",
     RET.NOPARAMS: u"缺少必要参数",
+    RET.DUPLICATEDATA: u"重复数据",
     RET.PARAMERROR: u"参数有误",
     RET.TOKENERROR: u"token过期",
     RET.THIRDPARTYERROR: u"第三方库报错",

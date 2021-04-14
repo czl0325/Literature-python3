@@ -3,7 +3,7 @@
 
   <div class="my-container">
     <van-form @submit="onLogin" style="margin-top: 20px;">
-      <van-field v-model="info.nickName" name="用户名" label="用户名" placeholder="请输入用户名" :rules="[{ required: true, message: '请填写用户名' }]" />
+      <van-field v-model="info.userName" name="用户名" label="用户名" placeholder="请输入用户名" :rules="[{ required: true, message: '请填写用户名' }]" />
       <van-field v-model="info.password" type="password" name="密码" label="密码" placeholder="请输入密码" :rules="[{ required: true, message: '请填写密码' }]"
       />
       <div style="margin: 16px;">
@@ -20,6 +20,8 @@
 import {defineComponent, reactive} from 'vue'
 import {useRouter} from "vue-router";
 import NavigationBar from "@/components/NavigationBar.vue";
+import {loginUser} from "@/http/api";
+import {useStore} from "vuex";
 
 export default defineComponent({
   name: "Login",
@@ -28,12 +30,16 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
+    const store = useStore()
     const info = reactive({
-      nickName: '',
+      userName: '',
       password: ''
     })
     const onLogin = () => {
-
+      loginUser(info.userName, info.password).then(res=>{
+        store.commit('updateUserInfo', res)
+        router.push({name: 'me', replace: true})
+      })
     }
     const toRegister = () => {
       router.push('register')

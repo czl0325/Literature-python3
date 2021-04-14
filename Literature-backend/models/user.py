@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from .BaseModel import db, BaseModel
 from datetime import datetime
 from werkzeug.security import generate_password_hash
+from flask import current_app
 
 
 class User(BaseModel, UserMixin, db.Model):
@@ -10,8 +11,8 @@ class User(BaseModel, UserMixin, db.Model):
     __tablename__ = 'tb_user'
     id = db.Column(db.Integer, primary_key=True)
     openId = db.Column(db.String(128), unique=True)
-    userName = db.Column(db.String(16))
-    password_hash = db.Column(db.String(20))
+    userName = db.Column(db.String(16), unique=True)
+    password_hash = db.Column(db.String(256))
     gender = db.Column(db.Integer, server_default='0')  # 1 男  0女
     province = db.Column(db.String(50))
     city = db.Column(db.String(50))
@@ -33,17 +34,20 @@ class User(BaseModel, UserMixin, db.Model):
     is_delete = db.Column(db.Boolean, default=False)
 
     def __init__(self, data):
-        self.openId = data['openId']
         self.updateInfo(data)
 
     def updateInfo(self, data):
+        if hasattr(data, 'openId'):
+            self.openId = data['openId']
         self.userName = data['userName']
+        self.password = data['password']
         self.gender = data['gender']
         self.province = data['province']
         self.city = data['city']
         self.district = data['district']
         self.avatarUrl = data['avatarUrl']
-        self.update_time = datetime.now()
+        if hasattr(data, 'id'):
+            self.update_time = datetime.now()
 
     def to_dict(self):
         return {
@@ -54,7 +58,7 @@ class User(BaseModel, UserMixin, db.Model):
             'province': self.province,
             'city': self.city,
             'district': self.district,
-            'avatarUrl': self.avatarUrl,
+            'avatarUrl': self.avatarUrl if self.avatarUrl.startswith('http') else current_app.config['QINIU_URLPREFIX'] + self.avatarUrl,
 
             'preference': self.preference,
             'brightness': self.brightness,

@@ -1,11 +1,12 @@
 <template>
   <div class="top-view">
-    <div class="avatar" @click="onLogin"></div>
+    <img class="avatar" @click="onLogin" :src="user.avatarUrl" />
     <div class="tr">
-      <span>{{ user.id ? user.nickName : '未登录' }}</span>
+      <span @click="onLogin">{{ user.id ? user.userName : '未登录' }}</span>
       <span>id: {{ user.id }}</span>
     </div>
   </div>
+  <van-cell title="我的书架" size="large" is-link />
 </template>
 
 <script lang="ts">
@@ -38,7 +39,7 @@ export default defineComponent({
 .top-view {
   background-color: @mainColor;
   width: 100%;
-  height: 250px;
+  height: 200px;
   display: flex;
   align-items: center;
   padding: 0 10px;

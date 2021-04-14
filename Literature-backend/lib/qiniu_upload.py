@@ -11,4 +11,5 @@ def upload_by_qiniu(image_data):
         return ret.get("key")
     else:
         raise Exception("上传七牛失败!")
+        return None
 

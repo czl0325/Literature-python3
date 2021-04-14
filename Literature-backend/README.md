@@ -48,6 +48,13 @@ source ~/.bashrc
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '111111';
 ```
 
+  * `Error: Can't locate revision identified by '3a141a561853'`
+    数据库版本的问题，可能是我用了mysql8.0.19，别人用了8.0.23，版本不对互相导数据就升级不了表。
+    
+```
+删除 migrations 文件夹 + 数据库表中的 alembic_version 表，然后重新执行那三条命令
+```
+
   * `ERROR 1290 (HY000): The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement`
 
 修改/private/etc/my.cnf文件注释掉--skip-grant-tables

@@ -5,7 +5,7 @@ export interface GlobalDataProps {
 export interface UserInfo {
   id?: number;
   openId?: string;
-  nickName?: string;
+  userName?: string;
   gender?: number;
   city?: string;
   province?: string;
