@@ -70,5 +70,14 @@ def is_number(s):
     return False
 
 
+# import re
+# def getChapterId(str):
+#     cop = re.compile("[^\u4e00-\u9fa5^0-9^-]")
+#     return cop.sub('', str)
+#
+#
+#
 # if __name__ == '__main__':
-#     print(chinese2digits('七十五-七十六'))
+#     str = (getChapterId('七十五-七十六'))
+#     print(str)
+#     print(chinese2digits(str))

@@ -84,12 +84,17 @@ class LiteratureCrawler():
                 if data and data.get('chapter_id'):
                     last = int(data.get('chapter_id'))
                     print("获取最后章节={}".format(last))
-                    if last >= len(chapters):
+                    index = len(chapters)-1
+                    newId = -1
+                    while index > 0:
+                        lastChapter = chapters[index]
+                        lastUrl = book_url + lastChapter.xpath('./@href')[0]
+                        newId = self.getNewChapterId(lastUrl)
+                        if newId > 0:
+                            break
+                        index -= 1
+                    if last >= newId:
                         return
-                # if len(chapters) > 0:
-                #     chapter = chapters[0]
-                #     chapter_url = book_url + chapter.xpath('./@href')[0]
-                #     self.crawling_book_chapter(chapter_url, book_db.book_id)
             for i, chapter in enumerate(chapters):
                 if i + 1 <= last:
                     continue
@@ -100,9 +105,6 @@ class LiteratureCrawler():
             print("请求失败:", response)
 
     def crawling_book_chapter(self, chapter_url, book_id, last):
-        # next_url = chapter_url
-        # while next_url.endswith('html'):
-        #     print(next_url)
         html = requests.get(chapter_url, headers=self.headers)
         html = html.content.decode()
         res = etree.HTML(html)
@@ -112,6 +114,7 @@ class LiteratureCrawler():
         if len(chapter_id) <= 0:
             return
         chapter_id = chapter_id[0]
+        chapter_id = self.getChapterId(chapter_id)
         chapter_id = chinese2digits(chapter_id)
         if chapter_id <= last and chapter_id != -1:
             return
@@ -137,6 +140,25 @@ class LiteratureCrawler():
             time.sleep(2)
         else:
             print("爬取失败,名称:{},第{}章".format(book_id, chapter_id))
+
+    @staticmethod
+    def getChapterId(text):
+        cop = re.compile("[^\u4e00-\u9fa5^0-9^-]")
+        return cop.sub('', text)
+
+    def getNewChapterId(self, last_url):
+        html = requests.get(last_url, headers=self.headers)
+        html = html.content.decode()
+        res = etree.HTML(html)
+        chapter_name = res.xpath('//div[@class="bookname"]/h1/text()')[0]
+        p1 = re.compile(r'第(.*?)章', re.S)
+        chapter_id = re.findall(p1, chapter_name)
+        if len(chapter_id) <= 0:
+            return -1
+        chapter_id = chapter_id[0]
+        chapter_id = self.getChapterId(chapter_id)
+        chapter_id = chinese2digits(chapter_id)
+        return chapter_id
 
 
 if __name__ == '__main__':

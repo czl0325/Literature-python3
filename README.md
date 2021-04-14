@@ -11,8 +11,8 @@
 #### 部分截图
 
 <img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/front-1.png" width="200" /> <img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/front-2.png" width="200" /> <img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/front-3.png" width="200" />
-<img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/back-1.png" width="400" />
-<img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/back-2.png" width="400" />
+<img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/back-1.png" width="700" />
+<img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/back-2.png" width="700" />
 
 #### 运行
 
