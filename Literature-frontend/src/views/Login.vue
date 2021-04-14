@@ -38,11 +38,11 @@ export default defineComponent({
     const onLogin = () => {
       loginUser(info.userName, info.password).then(res=>{
         store.commit('updateUserInfo', res)
-        router.push({name: 'me', replace: true})
+        router.back()
       })
     }
     const toRegister = () => {
-      router.push('register')
+      router.push({name: 'register', replace: true})
     }
     return {
       info,

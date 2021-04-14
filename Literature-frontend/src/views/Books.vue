@@ -10,7 +10,6 @@
             <span>作者：{{ book.author_name }}</span>
             <span>章节数：{{ book.chapter_num }}</span>
           </div>
-          <van-button type="primary" size="large" style="width :100px;height: 40px;" @click.stop="addBookShelf(book.book_id)">加入书架</van-button>
         </div>
       </van-list>
     </van-pull-refresh>
@@ -66,21 +65,7 @@ export default defineComponent({
       })
     }
     const toChapterList = (book_id: number) => {
-      console.log("书籍id=", book_id)
       router.push({path: '/chapter', query: { book_id: book_id }})
-    }
-    const store = useStore()
-    const addBookShelf = (book_id: number) => {
-      console.log("书籍id=", book_id)
-      if (!store.state.userInfo.id) {
-        Toast.fail('请先登录')
-        router.push('login')
-        return
-      }
-      Toast.loading('正在添加书籍到书架...')
-      addMyBook(book_id, store.state.userInfo.id).then(()=>{
-        Toast.success('添加成功!')
-      })
     }
     requestBookList(true)
     return {
@@ -88,8 +73,7 @@ export default defineComponent({
       cate_name,
       toChapterList,
       state,
-      requestBookList,
-      addBookShelf
+      requestBookList
     }
   }
 })
