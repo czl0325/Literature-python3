@@ -52,6 +52,10 @@ export default defineComponent({
           books.value = []
         }
         books.value = books.value.concat(res)
+        if (books.value.length > 0) {
+          const book = books.value[0]
+          cate_name.value = book.cate_name as string
+        }
       }).catch(err=>{
         if (!refresh) {
           pageNum--
