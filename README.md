@@ -8,6 +8,11 @@
 * Literature-backend ： 服务端代码
 * Literature-admin ： 后台管理系统代码
 
+#### 部分截图
+
+<img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/front-1.png" width="200>
+<img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/front-2.png" width="200>
+<img src="https://github.com/czl0325/Literature-python3/blob/main/screenshots/front-3.png" width="200>
 
 #### 运行
 
