@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-table :data="book_list" border style="width: 100%">
+      <el-table-column prop="book_id" label="id" width="80" />
       <el-table-column prop="book_name" label="书籍名称" />
       <el-table-column prop="author_name" label="作者" />
       <el-table-column prop="cate_name" label="所属分类" width="80" />
