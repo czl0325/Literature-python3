@@ -4,17 +4,6 @@ from datetime import datetime
 from flask import current_app
 
 
-class BookShelf(BaseModel, db.Model):
-    """ 书架 """
-    __tablename__ = 'tb_book_shelf'
-    id = db.Column(db.Integer, primary_key=True)
-    book_id = db.Column(db.Integer, index=True)  # 书籍ID
-    book_name = db.Column(db.String(100))  # 书籍名称
-    cover = db.Column(db.String(300))  # 封面图片（文件名）
-    user_id = db.Column(db.Integer)  # 用户id
-    db.Index('ix_book_id_user_id', book_id, user_id, unique=True)
-
-
 class ReadRate(BaseModel, db.Model):
     """ 阅读进度 """
     __tablename__ = 'tb_read_rate'

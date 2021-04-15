@@ -6,7 +6,7 @@
       <span>id: {{ user.id }}</span>
     </div>
   </div>
-  <van-cell title="我的书架" size="large" is-link />
+  <van-cell title="我的书架" size="large" is-link @click="toMyShelf" />
 </template>
 
 <script lang="ts">
@@ -26,16 +26,24 @@ export default defineComponent({
         router.push('login')
       }
     }
+    const toMyShelf = (event: MouseEvent) => {
+      if (!user.id) {
+        router.push('login')
+        return
+      }
+      router.push({name: 'mybooks', query: { user_id: user.id }})
+    }
     return {
       user,
-      onLogin
+      onLogin,
+      toMyShelf
     }
   }
 })
 </script>
 
 <style lang="less" scoped>
-@import "../css/common.less";
+@import "../../css/common.less";
 .top-view {
   background-color: @mainColor;
   width: 100%;

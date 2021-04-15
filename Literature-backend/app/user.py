@@ -2,9 +2,9 @@ from flask import Blueprint, current_app, request
 from flask_restful import Api, Resource, reqparse
 from datetime import datetime, timedelta
 from lib.jwt_utils import generate_jwt
-from models import db, Book, BookShelf, User
+from models import db, Book, User
 import random
-from utils.response_code import RET, ResponseData
+from utils.response_code import RET, ResponseData, PageModel
 from lib.qiniu_upload import upload_by_qiniu
 from werkzeug.security import check_password_hash
 
@@ -83,96 +83,43 @@ def addMyBook():
     if not all([book_id, user_id]):
         result.code = RET.NOPARAMS
         return result.to_dict()
-    book_shelf = BookShelf.query.filter_by(user_id=user_id, book_id=book_id).first()
-    if book_shelf:
-        result.code = RET.DUPLICATEDATA
-        return result.to_dict()
-    else:
-        book = Book.query.get(book_id)
-        if not book:
-            result.code = RET.NODATA
-            return result.to_dict()
-        try:
-            book_shelf = BookShelf(book_id=book.book_id, book_name=book.book_name, cover=book.cover, user_id=user_id)
-            db.session.add(book_shelf)
-            db.session.commit()
-        except Exception as e:
-            current_app.logger.error(e)
-            result.code = RET.DBERR
-            return result.to_dict()
+    # book_shelf = BookShelf.query.filter_by(user_id=user_id, book_id=book_id).first()
+    # if book_shelf:
+    #     result.code = RET.DUPLICATEDATA
+    #     return result.to_dict()
+    # else:
+    #     book = Book.query.get(book_id)
+    #     if not book:
+    #         result.code = RET.NODATA
+    #         return result.to_dict()
+    #     try:
+    #         book_shelf = BookShelf(book_id=book.book_id, book_name=book.book_name, cover=book.cover, user_id=user_id)
+    #         db.session.add(book_shelf)
+    #         db.session.commit()
+    #     except Exception as e:
+    #         current_app.logger.error(e)
+    #         result.code = RET.DBERR
+    #         return result.to_dict()
     return result.to_dict()
 
 
-class UserLoginResource(Resource):
-    @staticmethod
-    def _generate_jwt_token(user_id):
-        # 参数：user_id表示生成token的载荷中存储用户信息
-        # 1、生成当前时间
-        now = datetime.utcnow()
-        # 2、根据时间差，指定token的过期时间,
-        expire = now + timedelta(hours=current_app.config["JWT_EXPIRE_TIME"])
-        # 3、调用jwt工具，传入过期时间
-        token = generate_jwt({"user_id": user_id}, expire=expire)
-        return token
+@user_router.route('/mybook', methods=['GET'])
+def getMyBookShelf():
+    result = ResponseData(RET.OK)
+    user_id = request.args.get('user_id')
+    keyword = request.args.get('keyword')
+    page_num = request.args.get('pageNum', type=int, default=1)
+    page_size = request.args.get('pageSize', type=int, default=10)
+    # try:
+    #     book_query = BookShelf.query.filter_by(user_id=user_id)
+    #     if keyword:
+    #         book_query.filter(BookShelf.book_name.contains(keyword))
+    #     books_paginate = book_query.paginate(page=page_num, per_page=page_size, error_out=False)
+    #     books = [dict(book) for book in books_paginate.items]
+    #     page_model = PageModel(page_num=page_num, items=books, total_page=books_paginate.pages, total_num=books_paginate.total)
+    #     result.data = dict(page_model)
+    # except Exception as e:
+    #     current_app.logger.error(e)
+    #     result.code = RET.DBERR
+    return result.to_dict()
 
-    """书架增加默认书籍"""
-
-    def add_book_shelf(self, user_id):
-        books = Book.query.filter(Book.showed == True).all()
-        select_books = random.sample(books, 5)
-        for book in select_books:
-            db.session.add(BookShelf(book_id=book.book_id, user_id=user_id, book_name=book.book_name, cover=book.cover))
-        try:
-            db.session.commit()
-        except Exception as e:
-            current_app.logger.error(e)
-
-
-class AddTestUser(Resource):
-    def get(self):
-        # 默认添加用户，用来测试数据
-        # 构造用户数据
-        user = User(dict(
-            openId='1' * 32,
-            nickName='测试用户001',
-            gender=1,
-            city='厦门市',
-            province='福建省',
-            country='中国',
-            avatarUrl='http://mrw.so/5OGIYO'
-        ))
-        res_data = ResponseData(code=RET.OK)
-        try:
-            db.session.add(user)
-            db.session.commit()
-            token = UserLoginResource._generate_jwt_token(user.id)
-            res_data.data = {'token': token, 'user': user.to_dict()}
-            return res_data.to_dict()
-        except Exception as e:
-            current_app.logger.error(e)
-            res_data.code = RET.DBERR
-            return res_data.to_dict()
-
-
-class LoginByTestUser(Resource):
-    def post(self):
-        res_data = ResponseData(code=RET.OK)
-        print(res_data)
-
-        try:
-            openId = '1' * 32
-            user = User.query.filter_by(openId=openId).first()
-            if not User:
-                res_data.code = RET.NODATA
-                return res_data.to_dict()
-            token = UserLoginResource._generate_jwt_token(user.id)
-            res_data.data = {'token': token, 'user': user.to_dict()}
-            return res_data.to_dict()
-        except Exception as e:
-            current_app.logger.error(e)
-            res_data.code = RET.DBERR
-            return res_data.to_dict()
-
-
-api.add_resource(AddTestUser, '/addtestuser')
-api.add_resource(LoginByTestUser, '/logintestuser')

@@ -24,6 +24,14 @@ export const addMyBook = (book_id: number, user_id: number) => {
   })
 }
 
+export const getMyBook = (user_id: number, keyword: string, pageNum: number=1, refresh: boolean = true, state: {  refreshing: boolean, loading: boolean, finished: boolean }) => {
+  return http1.getWithPaging<BookModel>('/user/mybook', {
+    user_id,
+    keyword,
+    pageNum
+  }, refresh, state)
+}
+
 export const getCategoryList = () => {
   return http1.get('/category/list')
 }

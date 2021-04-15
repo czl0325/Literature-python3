@@ -6,6 +6,13 @@ from werkzeug.security import generate_password_hash
 from flask import current_app
 
 
+book_shelf = db.Table(
+    'tb_book_shelf',
+    db.Column('book_id', db.Integer, db.ForeignKey("tb_book.book_id"), primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey("tb_user.id"), primary_key=True)
+)
+
+
 class User(BaseModel, UserMixin, db.Model):
     """ 用户表 """
     __tablename__ = 'tb_user'
@@ -32,6 +39,8 @@ class User(BaseModel, UserMixin, db.Model):
     create_time = db.Column(db.DateTime, server_default=func.now())
     update_time = db.Column(db.DateTime, server_default=func.now())
     is_delete = db.Column(db.Boolean, default=False)
+
+    book_shelf = db.relationship('Book', secondary=book_shelf)
 
     def __init__(self, data):
         self.updateInfo(data)
