@@ -3,9 +3,7 @@
   <div class="my-container">
     <van-pull-refresh style="width: 100%;min-height: 100vh;" v-model="state.refreshing" @refresh="requestBookList(true)">
       <van-search v-model="search_word" placeholder="请输入搜索关键词" @search="requestBookList(true)" @clear="requestBookList(true)" />
-      <van-list v-model:loading="state.loading" :finished="state.finished" finished-text="没有更多数据" :immediate-check="false" @load="requestBookList(false)">
-        <book-item v-for="book in books" :key="book.book_id" :book="book" />
-      </van-list>
+      <book-item v-for="book in books" :key="book.book_id" :book="book" />
     </van-pull-refresh>
   </div>
 </template>
@@ -30,21 +28,13 @@ export default defineComponent({
     const search_word = ref('')
     const store = useStore()
     const books = ref<BookModel[]>([])
-    let pageNum = 1
-    const requestBookList = (refresh: boolean) => {
-      if (refresh) {
-        pageNum = 1
-      } else {
-        pageNum++
-      }
-      getMyBook(store.state.userInfo.id, search_word.value, pageNum, refresh, state).then((res:BookModel[]|any)=>{
-        if (refresh) {
-          books.value = []
-        }
-        books.value = books.value.concat(res)
-      })
+    const requestBookList = () => {
+      getMyBook(store.state.userInfo.id, search_word.value).then((res:BookModel[]|any)=>{
+        books.value = res
+        state.refreshing = false
+      }).catch(err=>state.refreshing = false)
     }
-    requestBookList(true)
+    requestBookList()
     return {
       state,
       search_word,

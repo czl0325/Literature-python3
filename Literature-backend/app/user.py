@@ -83,23 +83,20 @@ def addMyBook():
     if not all([book_id, user_id]):
         result.code = RET.NOPARAMS
         return result.to_dict()
-    # book_shelf = BookShelf.query.filter_by(user_id=user_id, book_id=book_id).first()
-    # if book_shelf:
-    #     result.code = RET.DUPLICATEDATA
-    #     return result.to_dict()
-    # else:
-    #     book = Book.query.get(book_id)
-    #     if not book:
-    #         result.code = RET.NODATA
-    #         return result.to_dict()
-    #     try:
-    #         book_shelf = BookShelf(book_id=book.book_id, book_name=book.book_name, cover=book.cover, user_id=user_id)
-    #         db.session.add(book_shelf)
-    #         db.session.commit()
-    #     except Exception as e:
-    #         current_app.logger.error(e)
-    #         result.code = RET.DBERR
-    #         return result.to_dict()
+    try:
+        book = Book.query.get(book_id)
+        if not book:
+            result.code = RET.NODATA
+            return result.to_dict()
+        user = User.query.get(user_id)
+        if not user:
+            result.code = RET.NODATA
+            return result.to_dict()
+        user.book_shelf.append(book)
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        result.code = RET.DBERR
     return result.to_dict()
 
 
@@ -108,18 +105,22 @@ def getMyBookShelf():
     result = ResponseData(RET.OK)
     user_id = request.args.get('user_id')
     keyword = request.args.get('keyword')
-    page_num = request.args.get('pageNum', type=int, default=1)
-    page_size = request.args.get('pageSize', type=int, default=10)
-    # try:
-    #     book_query = BookShelf.query.filter_by(user_id=user_id)
-    #     if keyword:
-    #         book_query.filter(BookShelf.book_name.contains(keyword))
-    #     books_paginate = book_query.paginate(page=page_num, per_page=page_size, error_out=False)
-    #     books = [dict(book) for book in books_paginate.items]
-    #     page_model = PageModel(page_num=page_num, items=books, total_page=books_paginate.pages, total_num=books_paginate.total)
-    #     result.data = dict(page_model)
-    # except Exception as e:
-    #     current_app.logger.error(e)
-    #     result.code = RET.DBERR
+    if not user_id:
+        result.code = RET.NOPARAMS
+        return result.to_dict()
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            result.code = RET.NODATA
+            return result.to_dict()
+        books = user.book_shelf
+        if keyword:
+            for book in books[:]:
+                if not keyword in book.book_name:
+                    books.remove(book)
+        books = [dict(book) for book in books]
+        result.data = books
+    except Exception as e:
+        current_app.logger.error(e)
+        result.code = RET.DBERR
     return result.to_dict()
-
