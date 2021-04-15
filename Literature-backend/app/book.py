@@ -76,16 +76,26 @@ def bookDetail(book_id):
     result = ResponseData(RET.OK)
     if not book_id:
         result.code = RET.NOPARAMS
-        return result
+        return result.to_dict()
     book = Book.query.get(book_id)
     if not book:
         result.code = RET.NODATA
-        return result
+        return result.to_dict()
     result.data = dict(book)
     return result.to_dict()
 
 
-
+@book_router.route('/getbookuser', methods=['GET'])
+def getBookUser():
+    result = ResponseData(RET.OK)
+    book_id = request.args.get('book_id')
+    if not book_id:
+        result.code = RET.NOPARAMS
+        return result.to_dict()
+    book = Book.query.get(book_id)
+    users = [user.to_dict() for user in book.users]
+    result.data = users
+    return result.to_dict()
 
 
 

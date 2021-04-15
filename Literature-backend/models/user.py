@@ -40,7 +40,7 @@ class User(BaseModel, UserMixin, db.Model):
     update_time = db.Column(db.DateTime, server_default=func.now())
     is_delete = db.Column(db.Boolean, default=False)
 
-    book_shelf = db.relationship('Book', secondary=book_shelf)
+    book_shelf = db.relationship('Book', secondary=book_shelf, backref=db.backref('users'))
 
     def __init__(self, data):
         self.updateInfo(data)
