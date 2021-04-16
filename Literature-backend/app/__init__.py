@@ -27,4 +27,6 @@ def create_app(config):
     app.register_blueprint(cate_router)
     from .chapter import chapter_router
     app.register_blueprint(chapter_router)
+    from .keyword import keyword_router
+    app.register_blueprint(keyword_router)
     return app

@@ -8,3 +8,9 @@ class SearchKeyWord(BaseModel, db.Model):
     keyword = db.Column(db.String(100))
     count = db.Column(db.Integer(), default=0)
     is_hot = db.Column(db.Boolean, default=False)
+
+    def keys(self):
+        return 'id', 'keyword', 'count'
+
+    def __getitem__(self, item):
+        return getattr(self, item)
