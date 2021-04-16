@@ -31,7 +31,9 @@ def addBook():
         if book:
             result.data = dict(book)
             return result.to_dict()
-    data = { 'book_name': book_name, 'channel_name': channel_name, 'channel_url': channel_url, 'author_name': author_name, 'cate_id': cate_id, 'cate_name': cate_name, 'intro': intro, 'word_count': word_count, 'chapter_num': chapter_num, 'cover': cover }
+    data = {'book_name': book_name, 'channel_name': channel_name, 'channel_url': channel_url,
+            'author_name': author_name, 'cate_id': cate_id, 'cate_name': cate_name, 'intro': intro,
+            'word_count': word_count, 'chapter_num': chapter_num, 'cover': cover}
     book = Book(data)
     if book_id:
         book.book_id = int(book_id)
@@ -60,17 +62,32 @@ def bookList():
     result = ResponseData(RET.OK)
     cates = request.args.get('cates', type=str, default='')
     keyword = request.args.get('keyword')
+    type = request.args.get('type')
     page_num = request.args.get('pageNum', type=int, default=1)
     page_size = request.args.get('pageSize', type=int, default=20)
-    books_query = Book.query.order_by(Book.create_time)
-    if cates:
-        books_query = books_query.filter(Book.cate_id.in_(cates.split(",")))
-    if keyword:
-        books_query = books_query.filter(Book.book_name.contains(keyword))
-    books_paginate = books_query.paginate(page=page_num, per_page=page_size, error_out=False)
-    books = [dict(book) for book in books_paginate.items]
-    page_model = PageModel(page_num=page_num, items=books, total_page=books_paginate.pages, total_num=books_paginate.total)
-    result.data = dict(page_model)
+    try:
+        books_query = Book.query
+        if cates:
+            books_query = books_query.filter(Book.cate_id.in_(cates.split(",")))
+        if keyword:
+            books_query = books_query.filter(Book.book_name.contains(keyword))
+        if type:
+            if type == 'hot':
+                books_query = books_query.filter(Book.heat > 0).order_by(Book.heat.desc())
+            elif type == 'collect':
+                books_query = books_query.filter(Book.collect_count > 0).order_by(Book.collect_count.desc())
+        books_query = books_query.order_by(Book.create_time.desc())
+        books_paginate = books_query.paginate(page=page_num, per_page=page_size, error_out=False)
+        if keyword:
+            for book in books_paginate.items:
+                book.heat += 1
+            db.session.commit()
+        books = [dict(book) for book in books_paginate.items]
+        page_model = PageModel(page_num=page_num, items=books, total_page=books_paginate.pages, total_num=books_paginate.total)
+        result.data = dict(page_model)
+    except Exception as e:
+        current_app.logger.error(e)
+        result.code = RET.DBERR
     return result.to_dict()
 
 
@@ -99,6 +116,3 @@ def getBookUser():
     users = [user.to_dict() for user in book.users]
     result.data = users
     return result.to_dict()
-
-
-

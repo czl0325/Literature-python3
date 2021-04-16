@@ -91,6 +91,7 @@ def addMyBook():
         if not user:
             result.code = RET.NODATA
             return result.to_dict()
+        book.collect_count += 1
         user.book_shelf.append(book)
         db.session.commit()
     except Exception as e:
