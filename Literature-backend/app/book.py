@@ -1,5 +1,5 @@
 from flask_restful import Api, Resource, reqparse
-from models import db, Book, BookChapters
+from models import db, Book, BookChapters, SearchKeyWord
 from flask import Blueprint, current_app, request
 from utils.response_code import ResponseData, RET, PageModel
 
@@ -81,6 +81,14 @@ def bookList():
         if keyword:
             for book in books_paginate.items:
                 book.heat += 1
+            keyword_query = SearchKeyWord.query.filter_by(keyword=keyword).first()
+            if keyword_query:
+                keyword_query.count+=1
+                if keyword_query.count>10:
+                    keyword_query.is_hot=True
+            else:
+                keyword_query = SearchKeyWord(keyword=keyword, count=1)
+                db.session.add(keyword_query)
             db.session.commit()
         books = [dict(book) for book in books_paginate.items]
         page_model = PageModel(page_num=page_num, items=books, total_page=books_paginate.pages, total_num=books_paginate.total)
