@@ -4,7 +4,6 @@ from lxml import etree
 from models import Book, BookChapters, BookCategory, BookChapterContent
 import re
 from utils.function import chinese2digits
-import random
 
 
 class LiteratureCrawler():
@@ -17,7 +16,9 @@ class LiteratureCrawler():
         print("开始爬取数据")
         html = requests.get(self.start_url, headers=self.headers)
         res = etree.HTML(html.content.decode())
-        categories = res.xpath('//div[@class="nav"]/ul/li[position()>3 and position()<9]')
+        categories = res.xpath('//div[@class="nav"]/ul/li[position()>2 and position()<9]')
+        max = min(5, len(categories)-1)
+        categories = categories[0:max]
         for category in categories:
             category_name = category.xpath('./a/text()')[0]
             books_url = category.xpath('./a/@href')[0]
@@ -118,6 +119,7 @@ class LiteratureCrawler():
         chapter_id = chapter_id[0]
         chapter_id = self.getChapterId(chapter_id)
         chapter_id = chinese2digits(chapter_id)
+        chapter_id = int(chapter_id)
         if chapter_id <= last and chapter_id != -1:
             return
         # content = res.xpath('//div[@id="content"]')[0].xpath('string(.)')
