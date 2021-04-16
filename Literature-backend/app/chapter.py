@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app, request
-from models import db, Book, BookChapters, BookChapterContent
+from models import db, Book, BookChapters, BookChapterContent, BrowseHistory
 from utils.response_code import ResponseData, RET, PageModel
+from utils.authorization import verify_jwt
 
 chapter_router = Blueprint('chapter', __name__, url_prefix='/chapter')
 
@@ -100,20 +101,35 @@ def chapterDetail():
     id = request.args.get('id')
     chapter_id = request.args.get('chapter_id')
     book_id = request.args.get('book_id')
-    if not id and (not all([chapter_id, book_id])):
-        result.code = RET.NOPARAMS
-        return result.to_dict()
-    chapter = None
-    if id:
-        chapter = BookChapters.query.get(id)
-    elif chapter_id and book_id:
-        chapter = BookChapters.query.filter_by(book_id=book_id, chapter_id=chapter_id).first()
-    if not chapter:
-        result.code = RET.NODATA
-        return result.to_dict()
-    data = dict(chapter)
-    data['content'] = chapter.content.content
-    result.data = data
+    token = request.headers.get('token')
+    user_id = None
+    try:
+        if token:
+            user_id = verify_jwt(token)
+            user_id = user_id.get('user_id')
+        if not id and (not all([chapter_id, book_id])):
+            result.code = RET.NOPARAMS
+            return result.to_dict()
+        chapter = None
+        if id:
+            chapter = BookChapters.query.get(id)
+        elif chapter_id and book_id:
+            chapter = BookChapters.query.filter_by(book_id=book_id, chapter_id=chapter_id).first()
+        if not chapter:
+            result.code = RET.NODATA
+            return result.to_dict()
+        data = dict(chapter)
+        data['content'] = chapter.content.content
+        if user_id:
+            history = BrowseHistory.query.filter_by(user_id=user_id, book_id=chapter.book_id).first()
+            if not history:
+                history = BrowseHistory(user_id=user_id, book_id=chapter.book_id)
+                db.session.add(history)
+                db.session.commit()
+        result.data = data
+    except Exception as e:
+        current_app.logger.error(e)
+        result.code = RET.DBERR
     return result.to_dict()
 
 
