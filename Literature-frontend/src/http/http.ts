@@ -3,6 +3,8 @@ import {MyAxios, BaseResponseData} from "@/http/myAxios";
 import qs from 'qs';
 import {AxiosInstance} from "axios";
 import {PageModel} from "@/models/models";
+import router from "@/router/router";
+import store from "@/store/index";
 
 export class HttpService {
   myAxios: AxiosInstance;
@@ -95,6 +97,11 @@ export class HttpService {
   resultHandle(res: BaseResponseData, resolve: { (value?: unknown): void; (arg0: any): void; }) {
     if (res.code === 0) {
       resolve(res.data);
+    } else if (res.code === 4100) {
+      Toast.fail('登录过期，请重新登录！')
+      store.commit('updateUserInfo', {})
+      localStorage.removeItem('userInfo')
+      router.push('login')
     } else {
       Toast.fail(res.message || '未知错误')
     }

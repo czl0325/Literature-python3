@@ -2,6 +2,7 @@
   <navigation-bar :title="cate_name"/>
   <div class="my-container">
     <van-pull-refresh style="width: 100%;min-height: 100vh;" v-model="state.refreshing" @refresh="requestBookList(true)">
+      <van-search v-model="search_word" placeholder="请输入搜索关键词" @search="requestBookList(true)" @clear="requestBookList(true)" />
       <van-list v-model:loading="state.loading" :finished="state.finished" finished-text="没有更多数据" :immediate-check="false" @load="requestBookList(false)">
         <book-item v-for="book in books" :key="book.book_id" :book="book" />
       </van-list>
@@ -28,6 +29,7 @@ export default defineComponent({
     const cate_id = (route.query.cate_id || '')
     const cate_name = ref('')
     const books = ref<BookModel[]>([])
+    const search_word = ref('')
     let pageNum = 1
     const state = reactive({
       refreshing: false,
@@ -41,7 +43,7 @@ export default defineComponent({
         pageNum++
       }
       // @ts-ignore
-      getBookList(pageNum, cate_id, refresh, state).then((res:BookModel[]|any)=>{
+      getBookList(pageNum, cate_id, search_word.value, refresh, state).then((res:BookModel[]|any)=>{
         if (refresh) {
           books.value = []
         }
@@ -60,6 +62,7 @@ export default defineComponent({
     return {
       books,
       cate_name,
+      search_word,
       state,
       requestBookList
     }

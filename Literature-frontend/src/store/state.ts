@@ -11,6 +11,7 @@ export interface UserInfo {
   province?: string;
   country?: string;
   avatarUrl?: string;
+  token?: string;
 }
 
 export default {

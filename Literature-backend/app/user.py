@@ -1,16 +1,12 @@
-from flask import Blueprint, current_app, request
-from flask_restful import Api, Resource, reqparse
-from datetime import datetime, timedelta
+from flask import Blueprint, current_app, request, g
 from lib.jwt_utils import generate_jwt
 from models import db, Book, User
-import random
+from utils.authorization import LoginRequired
 from utils.response_code import RET, ResponseData, PageModel
 from lib.qiniu_upload import upload_by_qiniu
 from werkzeug.security import check_password_hash
 
 user_router = Blueprint('user_router', __name__, url_prefix='/user')
-
-api = Api(user_router)
 
 
 @user_router.route('/register', methods=['POST'])
@@ -48,6 +44,7 @@ def register():
         result.code = RET.DBERR
         return result.to_dict()
     result.data = user.to_dict()
+    result.data['token'] = generate_jwt({'user_id': user.id})
     return result.to_dict()
 
 
@@ -68,6 +65,7 @@ def login():
             result.code = RET.NODATA
             return result.to_dict()
         result.data = user.to_dict()
+        result.data['token'] = generate_jwt({'user_id': user.id})
     except Exception as e:
         current_app.logger.error(e)
         result.code = RET.NODATA
@@ -76,10 +74,11 @@ def login():
 
 
 @user_router.route('/addMyBook', methods=['POST'])
+@LoginRequired
 def addMyBook():
     result = ResponseData(RET.OK)
     book_id = request.form.get('book_id')
-    user_id = request.form.get('user_id')
+    user_id = g.user_id
     if not all([book_id, user_id]):
         result.code = RET.NOPARAMS
         return result.to_dict()
@@ -101,9 +100,10 @@ def addMyBook():
 
 
 @user_router.route('/mybook', methods=['GET'])
+@LoginRequired
 def getMyBookShelf():
     result = ResponseData(RET.OK)
-    user_id = request.args.get('user_id')
+    user_id = g.user_id
     keyword = request.args.get('keyword')
     if not user_id:
         result.code = RET.NOPARAMS

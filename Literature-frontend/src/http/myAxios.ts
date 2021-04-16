@@ -1,6 +1,7 @@
 // 首先引入axios和上一步封装的cookie方法
 import axios, { AxiosInstance } from 'axios';
 import {Toast} from "vant";
+import store from "@/store";
 
 export interface BaseResponseData {
   code: number;
@@ -35,6 +36,11 @@ export class MyAxios {
     // 请求接口拦截器
     this.instance.interceptors.request.use(
       config => {
+        // @ts-ignore
+        if (store.state.userInfo.token) {
+          // @ts-ignore
+          config.headers.token = store.state.userInfo.token;
+        }
         return config
       },
       err => {

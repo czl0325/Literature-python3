@@ -59,11 +59,14 @@ def addBook():
 def bookList():
     result = ResponseData(RET.OK)
     cates = request.args.get('cates', type=str, default='')
+    keyword = request.args.get('keyword')
     page_num = request.args.get('pageNum', type=int, default=1)
     page_size = request.args.get('pageSize', type=int, default=20)
     books_query = Book.query.order_by(Book.create_time)
     if cates:
-        books_query.filter(Book.cate_id.in_(cates.split(",")))
+        books_query = books_query.filter(Book.cate_id.in_(cates.split(",")))
+    if keyword:
+        books_query = books_query.filter(Book.book_name.contains(keyword))
     books_paginate = books_query.paginate(page=page_num, per_page=page_size, error_out=False)
     books = [dict(book) for book in books_paginate.items]
     page_model = PageModel(page_num=page_num, items=books, total_page=books_paginate.pages, total_num=books_paginate.total)

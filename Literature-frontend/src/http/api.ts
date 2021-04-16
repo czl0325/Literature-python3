@@ -35,9 +35,10 @@ export const getCategoryList = () => {
   return http1.get('/category/list')
 }
 
-export const getBookList = (pageNum: number=1, cates: string='', refresh: boolean = true, state: {  refreshing: boolean, loading: boolean, finished: boolean }) => {
+export const getBookList = (pageNum: number=1, cates: string='', keyword: string='', refresh: boolean = true, state: {  refreshing: boolean, loading: boolean, finished: boolean }) => {
   return http1.getWithPaging<BookModel>('/book/list', {
     cates,
+    keyword,
     pageNum
   }, refresh, state)
 }
