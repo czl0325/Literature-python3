@@ -1,5 +1,5 @@
 from flask import Blueprint, current_app, request
-from models import db, Book, BookChapters, BookChapterContent, BrowseHistory
+from models import db, Book, BookChapters, BookChapterContent, BrowseHistory, ReadRate
 from utils.response_code import ResponseData, RET, PageModel
 from utils.authorization import verify_jwt
 
@@ -120,16 +120,29 @@ def chapterDetail():
             return result.to_dict()
         data = dict(chapter)
         data['content'] = chapter.content.content
+        result.data = data
         if user_id:
             history = BrowseHistory.query.filter_by(user_id=user_id, book_id=chapter.book_id).first()
             if not history:
                 history = BrowseHistory(user_id=user_id, book_id=chapter.book_id)
                 db.session.add(history)
-                db.session.commit()
-        result.data = data
+            current_chapter_id = chapter.chapter_id
+            lastChapter = BookChapters.query.filter(BookChapters.book_id == chapter.book_id).order_by(BookChapters.chapter_id.desc()).limit(1).first()
+            last_chapter_id = lastChapter.chapter_id
+            rate_process = round(current_chapter_id/last_chapter_id, 4)
+            rate = ReadRate.query.filter_by(user_id=user_id, book_id=chapter.book_id).first()
+            if not rate:
+                rate = ReadRate(user_id=user_id, book_id=book_id, chapter_id=current_chapter_id, chapter_name=chapter.chapter_name, rate=rate_process)
+            else:
+                rate.chapter_id=current_chapter_id
+                rate.chapter_name=chapter.chapter_name
+                rate.rate = rate_process
+            db.session.add(rate)
+            db.session.commit()
     except Exception as e:
         current_app.logger.error(e)
-        result.code = RET.DBERR
+        if not result.data:
+            result.code = RET.DBERR
     return result.to_dict()
 
 

@@ -1,6 +1,6 @@
 from flask_restful import Api, Resource, reqparse
 from models import db, Book, BookChapters, SearchKeyWord
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request, g
 from utils.response_code import ResponseData, RET, PageModel
 
 book_router = Blueprint('book', __name__, url_prefix='/book')

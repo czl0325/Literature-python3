@@ -4,17 +4,6 @@ from datetime import datetime
 from flask import current_app
 
 
-class ReadRate(BaseModel, db.Model):
-    """ 阅读进度 """
-    __tablename__ = 'tb_read_rate'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    book_id = db.Column(db.Integer)
-    chapter_id = db.Column(db.Integer)  # 章节id
-    chapter_name = db.Column(db.String(100))  # 章节名称
-    rate = db.Column(db.Integer, default=0)  # 阅读进度(百分率分子)
-
-
 class Book(BaseModel, db.Model):
     """ 书籍基本信息 """
     __tablename__ = 'tb_book'
@@ -123,3 +112,14 @@ class BookChapterContent(BaseModel, db.Model):
     __tablename__ = 'tb_book_chapter_content'
     id = db.Column(db.Integer, db.ForeignKey('tb_book_chapter.id'), primary_key=True)
     content = db.Column(MEDIUMTEXT)  # 章节内容
+
+
+class ReadRate(BaseModel, db.Model):
+    """ 阅读进度 """
+    __tablename__ = 'tb_read_rate'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    book_id = db.Column(db.Integer)
+    chapter_id = db.Column(db.Integer)          # 章节id
+    chapter_name = db.Column(db.String(100))    # 章节名称
+    rate = db.Column(db.Float, default=0)     # 阅读进度(百分率分子)
